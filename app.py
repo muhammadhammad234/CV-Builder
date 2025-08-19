@@ -1,0 +1,382 @@
+from flask import Flask, request, jsonify
+import google.generativeai as genai
+import os
+import json
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
+
+# Get API key from environment variable
+api_key = os.getenv('GEMINI_API_KEY')
+if not api_key:
+    raise ValueError("GEMINI_API_KEY not found in environment variables")
+
+genai.configure(api_key=api_key)
+model = genai.GenerativeModel(
+    'gemini-2.0-flash',
+    generation_config={"response_mime_type": "application/json"}
+)
+
+app = Flask(__name__)
+
+# Full CV HTML template (for Gemini to analyze and fill)
+CV_TEMPLATE = """
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Hafiz Tamoor Shehzad – CV</title>
+  <style>
+    /* Container & Left Bar */
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-color: #FFFFFF;
+      border-left: 8px solid #0F5581; /* vertical accent bar */
+    }
+    .container {
+      margin-left: 20px; /* space from the left border */
+      padding: 20px;
+    }
+
+    /* Header: Name & Title */
+    .header {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+    .header h1 {
+      margin: 0;
+      font-size: 32px;
+      font-weight: bold;
+      color: #001F5F; /* dark blue */
+    }
+    .header h2 {
+      margin: 5px 0 0;
+      font-size: 18px;
+      font-weight: normal;
+      color: #001F5F; /* dark blue */
+    }
+
+    /* Contact Info */
+    .contact-info {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .contact-info p {
+      margin: 3px 0;
+      font-size: 14px;
+      color: #001F5F; /* dark blue */
+    }
+
+    /* Section Headings */
+    .section-heading {
+      font-size: 20px;
+      font-weight: bold;
+      margin: 30px 0 10px;
+      color: #001F5F; /* dark blue */
+    }
+
+    /* Paragraphs */
+    .section p {
+      margin: 10px 0;
+      font-size: 14px;
+      color: #000000; /* black for body text */
+      text-align: justify;
+    }
+
+    /* Summary paragraph (colored dark blue) */
+    .summary p {
+      color: #001F5F;
+    }
+
+    /* Technical Proficiencies Table (one row, four columns) */
+    table.skills {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    table.skills td {
+      vertical-align: top;
+      padding: 5px 10px;
+      font-size: 14px;
+      color: #000000; /* black text */
+      width: 25%;
+    }
+    table.skills td .category {
+      font-weight: bold;
+      color: #000000;
+    }
+
+    /* Subsection (Experience Entries) */
+    .subsection {
+      margin-bottom: 25px;
+    }
+    .subsection .subheader {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-size: 16px;
+      font-weight: bold;
+      color: #000000;
+      margin-bottom: 5px;
+    }
+    .subsection .subheader .location {
+      font-size: 14px;
+      font-weight: normal;
+      color: #000000;
+    }
+    .subsection .role-title {
+      font-size: 15px;
+      margin-bottom: 8px;
+      color: #000000;
+    }
+    .subsection p.description {
+      margin: 8px 0;
+      font-size: 14px;
+      color: #000000;
+      text-align: justify;
+    }
+
+    /* Bullet Lists */
+    ul {
+      margin: 5px 0 10px 20px;
+      padding: 0;
+    }
+    ul li {
+      margin: 5px 0;
+      font-size: 14px;
+      color: #000000;
+      list-style-type: disc; /* preserve bullet */
+    }
+
+    /* Education Entries */
+    .education-item {
+      margin-bottom: 20px;
+    }
+    .education-item .institution {
+      font-size: 16px;
+      font-weight: bold;
+      color: #000000;
+    }
+    .education-item .details {
+      margin-left: 10px;
+      font-size: 14px;
+      color: #000000;
+    }
+    .education-item .details p {
+      margin: 3px 0;
+    }
+
+    /* Awards & Certifications Lists */
+    .awards-list,
+    .cert-list {
+      margin: 5px 0 10px 20px;
+      padding: 0;
+    }
+    .awards-list li,
+    .cert-list li {
+      margin: 4px 0;
+      font-size: 14px;
+      color: #000000;
+      list-style-type: disc;
+    }
+
+    /* Languages */
+    .languages {
+      font-size: 14px;
+      color: #000000;
+      margin-left: 20px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+
+    <!-- ======== Header ======== -->
+    <div class="header">
+      <h1>Hafiz Tamoor Shehzad</h1>
+      <h2>AI &amp; ML Researcher | Data Analyst</h2>
+    </div>
+
+    <!-- ======== Contact Info ======== -->
+    <div class="contact-info">
+      <p>tamoorchohan23@gmail.com</p>
+      <p>+92 306 4146651</p>
+      <p>House no # 165, Sector G, DHA Phase V, Lahore, Pakistan</p>
+    </div>
+
+    <!-- ======== Professional Summary ======== -->
+    <div class="section summary">
+      <div class="section-heading">Professional Summary</div>
+      <p>
+        Dedicated and growth-focused individual with a solid commitment for providing support to senior manager in managing data analytics book of work and strategy. Capable of liaising with line teams to solicit, prioritize functional requirements, and translate them into tangible solutions. Strong aptitude for preparing and building management reports, dashboards, and other business intelligence. Ability to inspect, clean, transform, and model data for discovering useful information, informing conclusions, and supporting decision-making as well as troubleshooting the reporting database environment and reports.
+      </p>
+    </div>
+
+    <!-- ======== Technical Proficiencies ======== -->
+    <div class="section">
+      <div class="section-heading">Technical Proficiencies</div>
+      <table class="skills">
+        <tr>
+          <td>
+            <span class="category">Data Management:</span><br />
+            Data Cleaning, Data Visualization, Data Calculations, Data Analysis, Data Aggregation
+          </td>
+          <td>
+            <span class="category">Programming Languages:</span><br />
+            Python, MATLAB, SQL
+          </td>
+          <td>
+            <span class="category">Frameworks:</span><br />
+             Flask
+          </td>
+          <td>
+            <span class="category">Databases:</span><br />
+             PostgreSQL, MySQL
+          </td>
+          <td>
+            <span class="category">Other Tools:</span><br />
+            Spreadsheets, Excel, Power BI
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- ======== Career Experience ======== -->
+    <div class="section">
+      <div class="section-heading">Career Experience</div>
+
+      <!-- Simplitaught (2024–Present) -->
+      <div class="subsection">
+        <div class="subheader">
+          <span>Simplitaught – San Ramon, California, United States</span>
+          <span class="location">2024 – Present</span>
+        </div>
+        <div class="role-title">AI &amp; ML Researcher</div>
+        <p class="description">
+          As an AI &amp; ML researcher, I focused on building intelligent systems to solve real-world business and educational challenges. My work spanned from predictive analytics and recommendation systems to multilingual AI agents and blockchain integration. I leveraged cutting-edge tools like Gemini and advanced data analysis to deliver scalable, high-accuracy solutions.
+        </p>
+        <ul>
+          <li>Developed and evaluated multiple predictive models to support data-driven business decisions.</li>
+          <li>Analyzed market data to extract actionable insights for strategic planning.</li>
+          <li>Conducted R&amp;D for launching a cryptocurrency token; authored its white paper and designed its tokenomics.</li>
+          <li>Built a multilingual AI chatbot using Gemini function calling, achieving 96% accuracy in handling complete website interactions.</li>
+          <li>Created an intelligent quiz generation algorithm that uses Gemini to produce chapter-wise quizzes, tracks user performance, and adapts questions based on previous incorrect answers.</li>
+          <li>Designed an algorithm for automatic flashcard generation tailored to specific topics.</li>
+          <li>Implemented a hybrid recommendation system combining collaborative filtering and content-based methods for personalized suggestions.</li>
+        </ul>
+      </div>
+
+      <!-- Simplitaught (2021–2024) -->
+      <div class="subsection">
+        <div class="subheader">
+          <span>Simplitaught – San Ramon, California, United States</span>
+          <span class="location">2021 – 2024</span>
+        </div>
+        <div class="role-title">Data Analyst / Content QA Analyst</div>
+        <p class="description">
+          I have hands-on experience in building data pipelines, automating content curation, and developing machine learning models to support data-driven decision-making. I focus on extracting insights from complex datasets and enhancing data quality, efficiency, and relevance through a strong analytical and technical approach.
+        </p>
+        <ul>
+          <li>Developed and implemented databases, data collection systems, and analytics strategies to improve data quality and statistical efficiency.</li>
+          <li>Acquired and maintained data from primary and secondary sources; cleaned and validated data for accuracy.</li>
+          <li>Identified trends and patterns in large datasets using statistical techniques; created reports to support business decisions.</li>
+          <li>Automated content curation using extracted Key Concepts from books to generate search queries and fetch YouTube videos, podcasts, blogs, articles, images, PDFs, and PPTs using Google and YouTube APIs.</li>
+          <li>Trained and deployed a BERT model to ensure high relevance of curated content, achieving 95% accuracy.</li>
+          <li>Built a feature extraction model for multiple content types to power a recommendation engine with 85% accuracy.</li>
+          <li>Developed a scalable model to extract Key Concepts from over 8,000 educational books.</li>
+          <li>Extracted customer insights to support strategic decisions; created dashboards presented in board meetings.</li>
+          <li>Assisted in managing master data and ensured quality control of imported data.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ======== Education ======== -->
+    <div class="section">
+      <div class="section-heading">Education</div>
+      <div class="education-item">
+        <div class="institution">LAHORE UNIVERSITY OF MANAGEMENT SCIENCES, Lahore, PAK</div>
+        <div class="details">
+          <p><strong>MS, Mathematics</strong> — July 2021</p>
+          <p>Ranked 1<sup>st</sup> in Class</p>
+          <p>Thesis: Option Pricing Using Stochastic Differential Equations</p>
+          <p>Advisor: Dr. Mudassar Razzaq</p>
+        </div>
+      </div>
+      <div class="education-item">
+        <div class="institution">UNIVERSITY OF EDUCATION, Lahore, PAK</div>
+        <div class="details">
+          <p><strong>BS, Mathematics</strong> — August 2019</p>
+          <p>Ranked 3<sup>rd</sup> in Class</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======== Achievements and Awards ======== -->
+    <div class="section">
+      <div class="section-heading">Achievements and Awards</div>
+      <ul class="awards-list">
+        <li>PEEF Scholarship</li>
+        <li>LUMS Merit Scholarship Award</li>
+        <li>Got laptop from PM Laptop scheme on Merit</li>
+        <li>Published a research paper in American Mathematical Society (AMS)</li>
+      </ul>
+    </div>
+
+    <!-- ======== Certifications ======== -->
+    <div class="section">
+      <div class="section-heading">Certifications</div>
+      <ul class="cert-list">
+        <li>Diploma in Data Science – WorldQuant University (In process)</li>
+      </ul>
+    </div>
+
+    <!-- ======== Languages ======== -->
+    <div class="section">
+      <div class="section-heading">Languages</div>
+      <p class="languages">English (Expert), Urdu (Expert), Punjabi (Expert)</p>
+    </div>
+
+  </div>
+</body>
+</html>
+"""
+
+@app.route('/questionnaire', methods=['POST'])
+def generate_questionnaire():
+    """
+    Analyze CV_TEMPLATE with Gemini and output a JSON questionnaire for all necessary fields.
+    """
+    prompt = (
+        "You are provided an HTML CV template. Analyze its structure and sections, then generate a JSON questionnaire "
+        "where keys are question IDs and values are question texts for every field needed in the CV. "
+        "Output strictly valid JSON.\n" + CV_TEMPLATE
+    )
+    response = model.generate_content(prompt)
+    # Gemini returns full JSON text
+    return jsonify(json.loads(response.text))
+
+@app.route('/generate-cv', methods=['POST'])
+def generate_cv():
+    """
+    Use Gemini to merge user JSON answers into the CV_TEMPLATE, elaborating details where appropriate.
+    Remove sections for which data is missing. Return the completed HTML.
+    """
+    answers = request.get_json()
+    prompt = (
+        "Fill this HTML CV template with the given JSON user data. If any section data is missing or empty, remove that section from the CV."
+        "Add new sections if relevant data is present (e.g., add a Frameworks section for technologies like Flask, Django, Node.js)."
+        "Summary should be 100 words. If user doesn't add summary just write on your own using his skills and experiences."
+        "there should be 5 bullets for every experience. If user doesn't add bullets just write on your own using his skills. "
+        "Enhance or elaborate descriptions where needed, but preserve structure and style. Output only the final HTML.\n"
+        + CV_TEMPLATE + "\nUserData:\n" + json.dumps(answers)
+
+    )
+    response = model.generate_content(prompt)
+    return response.text, 200, {'Content-Type': 'text/html'}
+
+if __name__ == '__main__':
+    app.run(debug=True)
