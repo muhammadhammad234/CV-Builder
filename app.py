@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import google.generativeai as genai
 import os
 import json
@@ -13,12 +14,15 @@ if not api_key:
     raise ValueError("GEMINI_API_KEY not found in environment variables")
 
 genai.configure(api_key=api_key)
-model = genai.GenerativeModel(
-    'gemini-2.0-flash',
-    generation_config={"response_mime_type": "application/json"}
-)
+model = genai.GenerativeModel('gemini-2.0-flash')
 
-app = Flask(__name__, template_folder="templates")
+# Configuration from environment variables
+PORT = int(os.getenv('PORT', 5001))
+HOST = os.getenv('HOST', '0.0.0.0')  # Changed to 0.0.0.0 to allow external connections
+DEBUG = os.getenv('DEBUG', 'True').lower() == 'true'
+
+app = Flask(__name__, template_folder="Templates")
+CORS(app)  # Enable CORS for all routes
 
 
 def load_template(template_name):
@@ -85,17 +89,39 @@ QUESTIONNAIRE = {
 }
 
 
+import datetime
+
+@app.route('/health', methods=['GET'])
+def health_check():
+    """Health check endpoint"""
+    return jsonify({
+        "status": "healthy",
+        "message": "Resume Builder API is running",
+        "templates": ["cv_1", "cv_2"],
+        "timestamp": str(datetime.datetime.now())
+    })
+
 @app.route('/questionnaire', methods=['GET'])
 def get_questionnaire():
     """
     Return hardcoded questionnaire with template info.
     Example: /questionnaire?template=cv_2
     """
-    template_choice = request.args.get("template", "cv_1")  
-    return jsonify({
-        "template": template_choice,
-        "questionnaire": QUESTIONNAIRE
-    })
+    try:
+        print("=== QUESTIONNAIRE REQUEST RECEIVED ===")
+        template_choice = request.args.get("template", "cv_1")
+        print(f"Template requested: {template_choice}")
+        
+        response_data = {
+            "template": template_choice,
+            "questionnaire": QUESTIONNAIRE
+        }
+        
+        print("✅ Returning questionnaire data")
+        return jsonify(response_data)
+    except Exception as e:
+        print(f"❌ Error in questionnaire endpoint: {str(e)}")
+        return jsonify({"error": f"Server error: {str(e)}"}), 500
 
 
 @app.route('/generate-cv', methods=['POST'])
@@ -104,28 +130,88 @@ def generate_cv():
     User sends back the questionnaire filled with answers.
     Use Gemini to merge answers into selected CV template.
     """
-    data = request.get_json()
-    template_choice = data.get("template", "cv_1")
-    answers = data.get("questionnaire", {})
-
-    template_file = f"{template_choice}.html"
-    cv_template = load_template(template_file)
-
-    prompt = (
-        "Fill this HTML CV template with the given JSON user data. "
-        "If any section data is missing or empty, remove that section from the CV. "
-        "Add new sections if relevant data is present. "
-        "Summary should be ~100 words. If user doesn't add summary just write one using his skills and experiences. "
-        "There should be 5 bullets for every experience (generate if missing). "
-        "Enhance or elaborate descriptions where needed, but preserve structure and style. "
-        "Output only the final HTML.\n"
-        + cv_template + "\nUserData:\n" + json.dumps(answers)
-    )
-
-    response = model.generate_content(prompt)
-    return response.text, 200, {'Content-Type': 'text/html'}
+    try:
+        print("=== CV GENERATION REQUEST RECEIVED ===")
+        print(f"Request method: {request.method}")
+        print(f"Request headers: {dict(request.headers)}")
+        print(f"Request content type: {request.content_type}")
+        
+        # Get JSON data
+        if not request.is_json:
+            print("❌ Request is not JSON")
+            return jsonify({"error": "Request must be JSON"}), 400
+        
+        data = request.get_json()
+        print(f"Received data keys: {list(data.keys()) if data else 'None'}")
+        
+        if not data:
+            print("❌ No data received")
+            return jsonify({"error": "No data received"}), 400
+        
+        template_choice = data.get("template", "cv_1")
+        answers = data.get("questionnaire", {})
+        
+        print(f"Template choice: {template_choice}")
+        print(f"Answers keys: {list(answers.keys()) if answers else 'None'}")
+        
+        # Validate template
+        template_file = f"{template_choice}.html"
+        try:
+            cv_template = load_template(template_file)
+            print(f"✅ Template loaded successfully: {template_file}")
+        except FileNotFoundError:
+            print(f"❌ Template file not found: {template_file}")
+            return jsonify({"error": f"Template {template_choice} not found"}), 404
+        
+        # Prepare prompt
+        prompt = (
+            "Fill this HTML CV template with the given JSON user data. "
+            "If any section data is missing or empty, remove that section from the CV. "
+            "Add new sections if relevant data is present. "
+            "Summary should be ~100 words. If user doesn't add summary just write one using his skills and experiences. "
+            "There should be 5 bullets for every experience (generate if missing). "
+            "Enhance or elaborate descriptions where needed, but preserve structure and style. "
+            "Output only the final HTML.\n"
+            + cv_template + "\nUserData:\n" + json.dumps(answers, indent=2)
+        )
+        
+        print("Sending request to Gemini AI...")
+        print(f"Prompt length: {len(prompt)} characters")
+        
+        # Generate content with error handling
+        try:
+            response = model.generate_content(prompt)
+            print("✅ Gemini AI response received")
+            print(f"Response type: {type(response)}")
+            print(f"Response text length: {len(response.text) if hasattr(response, 'text') else 'No text attribute'}")
+            
+            if hasattr(response, 'text') and response.text:
+                print("✅ Returning generated HTML")
+                return response.text, 200, {'Content-Type': 'text/html'}
+            else:
+                print("❌ No text in Gemini response")
+                return jsonify({"error": "No content generated by AI"}), 500
+                
+        except Exception as ai_error:
+            print(f"❌ Gemini AI error: {str(ai_error)}")
+            print(f"Error type: {type(ai_error)}")
+            return jsonify({"error": f"AI generation failed: {str(ai_error)}"}), 500
+            
+    except Exception as e:
+        print(f"❌ General error in generate_cv: {str(e)}")
+        print(f"Error type: {type(e)}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({"error": f"Server error: {str(e)}"}), 500
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    print(f"🚀 Starting Resume Builder Backend")
+    print(f"📍 Host: {HOST}")
+    print(f"🔌 Port: {PORT}")
+    print(f"🐛 Debug: {DEBUG}")
+    print(f"🔑 API Key: {'✅ Configured' if api_key else '❌ Missing'}")
+    print("=" * 50)
+    
+    app.run(debug=DEBUG, host=HOST, port=PORT)
 
