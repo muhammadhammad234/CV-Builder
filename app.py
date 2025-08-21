@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import google.generativeai as genai
 import os
 import json
@@ -13,12 +14,14 @@ if not api_key:
     raise ValueError("GEMINI_API_KEY not found in environment variables")
 
 genai.configure(api_key=api_key)
-model = genai.GenerativeModel(
-    'gemini-2.0-flash',
-    generation_config={"response_mime_type": "application/json"}
-)
+model = genai.GenerativeModel('gemini-2.0-flash')
 
-app = Flask(__name__, template_folder="Templates")
+# Configuration from environment variables
+PORT = int(os.getenv('PORT', 5001))
+HOST = os.getenv('HOST', '0.0.0.0')  # Changed to 0.0.0.0 to allow external connections
+DEBUG = os.getenv('DEBUG', 'True').lower() == 'true'
+
+app = Flask(__name__, template_folder="templates")
 
 
 def load_template(template_name, folder="Templates"):
@@ -92,17 +95,39 @@ QUESTIONNAIRE = {
 }
 
 
+import datetime
+
+@app.route('/health', methods=['GET'])
+def health_check():
+    """Health check endpoint"""
+    return jsonify({
+        "status": "healthy",
+        "message": "Resume Builder API is running",
+        "templates": ["cv_1", "cv_2"],
+        "timestamp": str(datetime.datetime.now())
+    })
+
 @app.route('/questionnaire', methods=['GET'])
 def get_questionnaire():
     """
     Return hardcoded questionnaire with template info.
     Example: /questionnaire?template=cv_2
     """
-    template_choice = request.args.get("template", "cv_1")  
-    return jsonify({
-        "template": template_choice,
-        "questionnaire": QUESTIONNAIRE
-    })
+    try:
+        print("=== QUESTIONNAIRE REQUEST RECEIVED ===")
+        template_choice = request.args.get("template", "cv_1")
+        print(f"Template requested: {template_choice}")
+        
+        response_data = {
+            "template": template_choice,
+            "questionnaire": QUESTIONNAIRE
+        }
+        
+        print("✅ Returning questionnaire data")
+        return jsonify(response_data)
+    except Exception as e:
+        print(f"❌ Error in questionnaire endpoint: {str(e)}")
+        return jsonify({"error": f"Server error: {str(e)}"}), 500
 
 
 @app.route('/generate-cv', methods=['POST'])
@@ -116,7 +141,7 @@ def generate_cv():
     answers = data.get("questionnaire", {})
 
     template_file = f"{template_choice}.html"
-    cv_template = load_template(template_file, folder="cv")
+    cv_template = load_template(template_file)
 
     prompt = (
         "Fill this HTML CV template with the given JSON user data. "
@@ -197,3 +222,4 @@ def generate_cover_letter():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
