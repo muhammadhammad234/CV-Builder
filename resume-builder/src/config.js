@@ -12,7 +12,10 @@ const config = {
     ENDPOINTS: {
         HEALTH: '/health',
         QUESTIONNAIRE: '/questionnaire',
-        GENERATE_CV: '/generate-cv'
+        GENERATE_CV: '/generate-cv',
+        GENERATE_COVER_LETTER: '/generate-cover-letter',
+        QUESTIONNAIRE_COVER_LETTER: '/questionnaire-cover-letter',
+        GENERATE_ATS_SCORE: '/generate-ats-score'
     }
 };
 

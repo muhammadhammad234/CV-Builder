@@ -20,7 +20,7 @@ import {
     FormControlLabel,
     Checkbox
 } from '@mui/material';
-import { Add, Delete, Visibility, CheckCircle } from '@mui/icons-material';
+import { Add, Delete, Visibility, CheckCircle, ArrowBack, Description } from '@mui/icons-material';
 import axios from 'axios';
 import config from '../config';
 
@@ -225,7 +225,7 @@ const ResumeBuilder = () => {
                 onChange={(e) => handleInputChange(section, field, e.target.value, index)}
                 margin="normal"
                 variant="outlined"
-                helperText={isTextarea ? "List key responsibilities and achievements (optional - AI will generate if missing)" : undefined}
+                helperText={isTextarea ? (section === 'skills' ? "List your skills (comma separated)" : "List key responsibilities and achievements (optional - AI will generate if missing)") : undefined}
                 InputLabelProps={isDate ? { shrink: true } : undefined}
                 sx={{
                     width: '100%',
@@ -368,39 +368,6 @@ const ResumeBuilder = () => {
                                 <Grid container spacing={3} sx={{ mb: 3, display: 'flex' }}>
                                     <Grid item xs={12} md={6} sx={{ flex: 1, minWidth: 0 }}>
                                         {renderField('experience', 'start_date', 'Start Date', 'date', index)}
-                                        <Box sx={{ mt: 1, mb: 1 }}>
-                                            <FormControlLabel
-                                                control={
-                                                    <Checkbox
-                                                        checked={item.currently_working}
-                                                        onChange={(e) => handleInputChange('experience', 'currently_working', e.target.checked, index)}
-                                                        icon={<CheckCircle />}
-                                                        checkedIcon={<CheckCircle />}
-                                                        sx={{
-                                                            '& .MuiSvgIcon-root': {
-                                                                fontSize: 24,
-                                                                color: 'rgba(255,255,255,0.8)'
-                                                            },
-                                                            '&.Mui-checked .MuiSvgIcon-root': {
-                                                                color: 'rgba(255,255,255,1)'
-                                                            },
-                                                            '&:hover .MuiSvgIcon-root': {
-                                                                color: 'rgba(255,255,255,1)'
-                                                            }
-                                                        }}
-                                                    />
-                                                }
-                                                label={
-                                                    <Typography variant="body2" sx={{
-                                                        fontWeight: 500,
-                                                        color: 'rgba(255,255,255,0.9)',
-                                                        fontSize: '0.9rem'
-                                                    }}>
-                                                        Currently working here
-                                                    </Typography>
-                                                }
-                                            />
-                                        </Box>
                                     </Grid>
                                     <Grid item xs={12} md={6} sx={{ flex: 1, minWidth: 0 }}>
                                         {!item.currently_working ? (
@@ -422,6 +389,40 @@ const ResumeBuilder = () => {
                                                 </Typography>
                                             </Box>
                                         )}
+                                        <Box sx={{ mt: 1, mb: 1 }}>
+                                            <FormControlLabel
+                                                control={
+                                                    <Checkbox
+                                                        checked={item.currently_working}
+                                                        onChange={(e) => handleInputChange('experience', 'currently_working', e.target.checked, index)}
+                                                        icon={<CheckCircle />}
+                                                        checkedIcon={<CheckCircle />}
+                                                        size="small"
+                                                        sx={{
+                                                            '& .MuiSvgIcon-root': {
+                                                                fontSize: 18,
+                                                                color: 'rgba(255,255,255,0.8)'
+                                                            },
+                                                            '&.Mui-checked .MuiSvgIcon-root': {
+                                                                color: 'rgba(255,255,255,1)'
+                                                            },
+                                                            '&:hover .MuiSvgIcon-root': {
+                                                                color: 'rgba(255,255,255,1)'
+                                                            }
+                                                        }}
+                                                    />
+                                                }
+                                                label={
+                                                    <Typography variant="body2" sx={{
+                                                        fontWeight: 500,
+                                                        color: 'rgba(255,255,255,0.9)',
+                                                        fontSize: '0.8rem'
+                                                    }}>
+                                                        Currently working here
+                                                    </Typography>
+                                                }
+                                            />
+                                        </Box>
                                     </Grid>
                                 </Grid>
 
@@ -551,7 +552,7 @@ const ResumeBuilder = () => {
             px: 2,
             position: 'relative'
         }}>
-            <Container maxWidth="lg">
+            <Container maxWidth="lg" sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <Fade in timeout={800}>
                     <Box textAlign="center" mb={6}>
                         <Slide direction="down" in timeout={600}>
@@ -599,8 +600,8 @@ const ResumeBuilder = () => {
                     </Fade>
                 )}
 
-                <Grid container spacing={4}>
-                    <Grid item xs={12} lg={8}>
+                <Grid container spacing={4} sx={{ width: '100%', justifyContent: 'center' }}>
+                    <Grid item xs={12}>
                         {/* Personal Information */}
                         <Grow in timeout={600}>
                             <Paper sx={{
@@ -659,7 +660,7 @@ const ResumeBuilder = () => {
                                 border: '1px solid rgba(255, 255, 255, 0.15)',
                                 boxShadow: '0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1)'
                             }}>
-                                <Typography variant="h5" color="primary" gutterBottom sx={{ fontWeight: 'bold', mb: 3 }}>
+                                <Typography variant="h5" color="white" gutterBottom sx={{ fontWeight: 'bold', mb: 3 }}>
                                     Professional Summary
                                 </Typography>
                                 <TextField
@@ -724,225 +725,34 @@ const ResumeBuilder = () => {
                                 border: '1px solid rgba(255, 255, 255, 0.15)',
                                 boxShadow: '0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1)'
                             }}>
-                                <Typography variant="h5" color="primary" gutterBottom sx={{
-                                    fontWeight: 'bold',
-                                    mb: 4,
-                                    textAlign: 'center',
-                                    fontSize: '2rem',
-                                    textShadow: '0 2px 4px rgba(0,0,0,0.1)'
-                                }}>
+                                <Typography variant="h5" color="white" gutterBottom sx={{ fontWeight: 'bold', mb: 3 }}>
                                     💼 Skills & Expertise
                                 </Typography>
-                                <Grid container spacing={4}>
-                                    <Grid item xs={12} md={6}>
-                                        <TextField
-                                            fullWidth
-                                            label="Technical Skills"
-                                            multiline
-                                            rows={4}
-                                            value={formData.skills.technical_skills}
-                                            onChange={(e) => handleInputChange('skills', 'technical_skills', e.target.value)}
-                                            margin="normal"
-                                            variant="outlined"
-                                            helperText="List your technical skills (comma separated)"
-                                            sx={{
-                                                '& .MuiOutlinedInput-root': {
-                                                    borderRadius: 3,
-                                                    backgroundColor: 'rgba(255,255,255,0.1)',
-                                                    backdropFilter: 'blur(10px)',
-                                                    border: '1px solid rgba(255,255,255,0.2)',
-                                                    fontSize: '1.1rem',
-                                                    color: '#ffffff',
-                                                    '&:hover': {
-                                                        backgroundColor: 'rgba(255,255,255,0.15)',
-                                                        border: '1px solid rgba(255,255,255,0.3)'
-                                                    },
-                                                    '&.Mui-focused': {
-                                                        backgroundColor: 'rgba(255,255,255,0.2)',
-                                                        border: '2px solid rgba(255,255,255,0.5)'
-                                                    }
-                                                },
-                                                '& .MuiInputLabel-root': {
-                                                    fontSize: '1.1rem',
-                                                    fontWeight: 500,
-                                                    color: 'rgba(255,255,255,0.7)',
-                                                    '&.Mui-focused': {
-                                                        color: 'rgba(255,255,255,0.9)'
-                                                    }
-                                                },
-                                                '& .MuiInputBase-input': {
-                                                    color: '#ffffff'
-                                                }
-                                            }}
-                                        />
+
+                                {/* First Row - 2 fields */}
+                                <Grid container spacing={3} sx={{ mb: 3, display: 'flex' }}>
+                                    <Grid item xs={12} md={6} sx={{ flex: 1, minWidth: 0 }}>
+                                        {renderField('skills', 'technical_skills', 'Technical Skills', 'textarea')}
                                     </Grid>
-                                    <Grid item xs={12} md={6}>
-                                        <TextField
-                                            fullWidth
-                                            label="Soft Skills"
-                                            multiline
-                                            rows={4}
-                                            value={formData.skills.soft_skills}
-                                            onChange={(e) => handleInputChange('skills', 'soft_skills', e.target.value)}
-                                            margin="normal"
-                                            variant="outlined"
-                                            helperText="List your soft skills (optional)"
-                                            sx={{
-                                                '& .MuiOutlinedInput-root': {
-                                                    borderRadius: 3,
-                                                    backgroundColor: 'rgba(255,255,255,0.1)',
-                                                    backdropFilter: 'blur(10px)',
-                                                    border: '1px solid rgba(255,255,255,0.2)',
-                                                    fontSize: '1.1rem',
-                                                    color: '#ffffff',
-                                                    '&:hover': {
-                                                        backgroundColor: 'rgba(255,255,255,0.15)',
-                                                        border: '1px solid rgba(255,255,255,0.3)'
-                                                    },
-                                                    '&.Mui-focused': {
-                                                        backgroundColor: 'rgba(255,255,255,0.2)',
-                                                        border: '2px solid rgba(255,255,255,0.5)'
-                                                    }
-                                                },
-                                                '& .MuiInputLabel-root': {
-                                                    fontSize: '1.1rem',
-                                                    fontWeight: 500,
-                                                    color: 'rgba(255,255,255,0.7)',
-                                                    '&.Mui-focused': {
-                                                        color: 'rgba(255,255,255,0.9)'
-                                                    }
-                                                },
-                                                '& .MuiInputBase-input': {
-                                                    color: '#ffffff'
-                                                }
-                                            }}
-                                        />
+                                    <Grid item xs={12} md={6} sx={{ flex: 1, minWidth: 0 }}>
+                                        {renderField('skills', 'soft_skills', 'Soft Skills (Optional)', 'textarea')}
                                     </Grid>
-                                    <Grid item xs={12} md={6}>
-                                        <TextField
-                                            fullWidth
-                                            label="Frameworks & Libraries"
-                                            multiline
-                                            rows={3}
-                                            value={formData.skills.frameworks}
-                                            onChange={(e) => handleInputChange('skills', 'frameworks', e.target.value)}
-                                            margin="normal"
-                                            variant="outlined"
-                                            helperText="List frameworks and libraries you know"
-                                            sx={{
-                                                '& .MuiOutlinedInput-root': {
-                                                    borderRadius: 3,
-                                                    backgroundColor: 'rgba(255,255,255,0.1)',
-                                                    backdropFilter: 'blur(10px)',
-                                                    border: '1px solid rgba(255,255,255,0.2)',
-                                                    fontSize: '1.1rem',
-                                                    color: '#ffffff',
-                                                    '&:hover': {
-                                                        backgroundColor: 'rgba(255,255,255,0.15)',
-                                                        border: '1px solid rgba(255,255,255,0.3)'
-                                                    },
-                                                    '&.Mui-focused': {
-                                                        backgroundColor: 'rgba(255,255,255,0.2)',
-                                                        border: '2px solid rgba(255,255,255,0.5)'
-                                                    }
-                                                },
-                                                '& .MuiInputLabel-root': {
-                                                    fontSize: '1.1rem',
-                                                    fontWeight: 500,
-                                                    color: 'rgba(255,255,255,0.7)',
-                                                    '&.Mui-focused': {
-                                                        color: 'rgba(255,255,255,0.9)'
-                                                    }
-                                                },
-                                                '& .MuiInputBase-input': {
-                                                    color: '#ffffff'
-                                                }
-                                            }}
-                                        />
+                                </Grid>
+
+                                {/* Second Row - 2 fields */}
+                                <Grid container spacing={3} sx={{ mb: 3, display: 'flex' }}>
+                                    <Grid item xs={12} md={6} sx={{ flex: 1, minWidth: 0 }}>
+                                        {renderField('skills', 'frameworks', 'Frameworks & Libraries', 'textarea')}
                                     </Grid>
-                                    <Grid item xs={12} md={6}>
-                                        <TextField
-                                            fullWidth
-                                            label="Tools & Technologies"
-                                            multiline
-                                            rows={3}
-                                            value={formData.skills.tools}
-                                            onChange={(e) => handleInputChange('skills', 'tools', e.target.value)}
-                                            margin="normal"
-                                            variant="outlined"
-                                            helperText="List tools and technologies you're familiar with"
-                                            sx={{
-                                                '& .MuiOutlinedInput-root': {
-                                                    borderRadius: 3,
-                                                    backgroundColor: 'rgba(255,255,255,0.1)',
-                                                    backdropFilter: 'blur(10px)',
-                                                    border: '1px solid rgba(255,255,255,0.2)',
-                                                    fontSize: '1.1rem',
-                                                    color: '#ffffff',
-                                                    '&:hover': {
-                                                        backgroundColor: 'rgba(255,255,255,0.15)',
-                                                        border: '1px solid rgba(255,255,255,0.3)'
-                                                    },
-                                                    '&.Mui-focused': {
-                                                        backgroundColor: 'rgba(255,255,255,0.2)',
-                                                        border: '2px solid rgba(255,255,255,0.5)'
-                                                    }
-                                                },
-                                                '& .MuiInputLabel-root': {
-                                                    fontSize: '1.1rem',
-                                                    fontWeight: 500,
-                                                    color: 'rgba(255,255,255,0.7)',
-                                                    '&.Mui-focused': {
-                                                        color: 'rgba(255,255,255,0.9)'
-                                                    }
-                                                },
-                                                '& .MuiInputBase-input': {
-                                                    color: '#ffffff'
-                                                }
-                                            }}
-                                        />
+                                    <Grid item xs={12} md={6} sx={{ flex: 1, minWidth: 0 }}>
+                                        {renderField('skills', 'tools', 'Tools & Technologies', 'textarea')}
                                     </Grid>
-                                    <Grid item xs={12}>
-                                        <TextField
-                                            fullWidth
-                                            label="Programming Languages"
-                                            multiline
-                                            rows={3}
-                                            value={formData.skills.languages}
-                                            onChange={(e) => handleInputChange('skills', 'languages', e.target.value)}
-                                            margin="normal"
-                                            variant="outlined"
-                                            helperText="List programming languages you know"
-                                            sx={{
-                                                '& .MuiOutlinedInput-root': {
-                                                    borderRadius: 3,
-                                                    backgroundColor: 'rgba(255,255,255,0.1)',
-                                                    backdropFilter: 'blur(10px)',
-                                                    border: '1px solid rgba(255,255,255,0.2)',
-                                                    fontSize: '1.1rem',
-                                                    color: '#ffffff',
-                                                    '&:hover': {
-                                                        backgroundColor: 'rgba(255,255,255,0.15)',
-                                                        border: '1px solid rgba(255,255,255,0.3)'
-                                                    },
-                                                    '&.Mui-focused': {
-                                                        backgroundColor: 'rgba(255,255,255,0.2)',
-                                                        border: '2px solid rgba(255,255,255,0.5)'
-                                                    }
-                                                },
-                                                '& .MuiInputLabel-root': {
-                                                    fontSize: '1.1rem',
-                                                    fontWeight: 500,
-                                                    color: 'rgba(255,255,255,0.7)',
-                                                    '&.Mui-focused': {
-                                                        color: 'rgba(255,255,255,0.9)'
-                                                    }
-                                                },
-                                                '& .MuiInputBase-input': {
-                                                    color: '#ffffff'
-                                                }
-                                            }}
-                                        />
+                                </Grid>
+
+                                {/* Third Row - 1 field (full width) */}
+                                <Grid container spacing={3} sx={{ display: 'flex' }}>
+                                    <Grid item xs={12} sx={{ flex: 1, minWidth: 0 }}>
+                                        {renderField('skills', 'languages', 'Programming Languages', 'textarea')}
                                     </Grid>
                                 </Grid>
                             </Paper>
@@ -979,7 +789,7 @@ const ResumeBuilder = () => {
                                 border: '1px solid rgba(255, 255, 255, 0.15)',
                                 boxShadow: '0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1)'
                             }}>
-                                <Typography variant="h5" color="primary" gutterBottom sx={{ fontWeight: 'bold', mb: 3 }}>
+                                <Typography variant="h5" color="white" gutterBottom sx={{ fontWeight: 'bold', mb: 3 }}>
                                     🗣️ Languages
                                 </Typography>
                                 {renderField('languages', 'language', 'Languages (e.g., English, Urdu)')}
@@ -997,7 +807,7 @@ const ResumeBuilder = () => {
                                 border: '1px solid rgba(255, 255, 255, 0.15)',
                                 boxShadow: '0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1)'
                             }}>
-                                <Typography variant="h5" color="primary" gutterBottom sx={{ fontWeight: 'bold', mb: 3 }}>
+                                <Typography variant="h5" color="white" gutterBottom sx={{ fontWeight: 'bold', mb: 3 }}>
                                     📚 Relevant Courses
                                 </Typography>
                                 {renderField('courses', 'relevant_courses', 'Relevant Courses or Certifications')}
@@ -1005,122 +815,287 @@ const ResumeBuilder = () => {
                         </Grow>
                     </Grid>
 
-                    {/* Sidebar */}
-                    <Grid item xs={12} lg={4}>
+                    {/* Resume Actions - Full Width */}
+                    <Grid item xs={12}>
                         <Fade in timeout={1200}>
                             <Paper sx={{
-                                p: 4,
-                                position: 'sticky',
-                                top: 20,
+                                px: 4,
+                                py: 4,
                                 borderRadius: 3,
                                 background: 'rgba(255,255,255,0.08)',
                                 backdropFilter: 'blur(20px)',
                                 border: '1px solid rgba(255,255,255,0.15)',
                                 color: 'white',
-                                boxShadow: '0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1)'
+                                boxShadow: '0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1)',
+                                height: 'fit-content',
+                                width: '100%',
+                                maxWidth: '1200px',
+                                mx: 'auto'
                             }}>
-                                <Typography variant="h5" color="white" gutterBottom sx={{ fontWeight: 'bold', mb: 3 }}>
-                                    Resume Actions
-                                </Typography>
-
-                                <Box mb={3} sx={{
-                                    p: 2,
-                                    backgroundColor: 'rgba(255,255,255,0.1)',
-                                    borderRadius: 2,
-                                    backdropFilter: 'blur(10px)'
-                                }}>
-                                    <Typography variant="body1" color="white" sx={{ fontWeight: 'bold' }}>
-                                        Template: <strong>{selectedTemplate === 'cv_1' ? 'Professional' : 'Creative'}</strong>
-                                    </Typography>
-                                </Box>
-
-                                <Button
-                                    fullWidth
-                                    variant="contained"
-                                    size="large"
-                                    onClick={handleGenerateResume}
-                                    disabled={loading}
-                                    startIcon={loading ? <CircularProgress size={20} color="inherit" /> : <Visibility />}
-                                    sx={{
-                                        mb: 3,
-                                        py: 2,
-                                        fontSize: '1.1rem',
-                                        fontWeight: 'bold',
-                                        background: 'rgba(255,255,255,0.2)',
-                                        backdropFilter: 'blur(10px)',
-                                        border: '1px solid rgba(255,255,255,0.3)',
-                                        borderRadius: 3,
-                                        textTransform: 'none',
-                                        '&:hover': {
-                                            background: 'rgba(255,255,255,0.3)',
-                                            transform: 'translateY(-2px)',
-                                            boxShadow: '0 8px 25px rgba(0,0,0,0.2)'
-                                        },
-                                        '&:disabled': {
-                                            background: 'rgba(255,255,255,0.1)',
-                                            color: 'rgba(255,255,255,0.5)'
-                                        },
-                                        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
-                                    }}
-                                >
-                                    {loading ? 'Generating...' : 'Generate Resume'}
-                                </Button>
-
-                                <Button
-                                    fullWidth
-                                    variant="outlined"
-                                    onClick={() => navigate('/')}
-                                    sx={{
-                                        py: 1.5,
-                                        borderColor: 'rgba(255,255,255,0.5)',
-                                        color: 'white',
-                                        borderRadius: 2,
-                                        textTransform: 'none',
+                                {/* Header Section - Horizontal Layout */}
+                                <Box sx={{ mb: 4, textAlign: 'center' }}>
+                                    <Typography variant="h5" color="white" sx={{
                                         fontWeight: 'bold',
                                         mb: 2,
-                                        '&:hover': {
-                                            borderColor: 'white',
-                                            background: 'rgba(255,255,255,0.1)',
-                                            transform: 'translateY(-1px)'
-                                        },
-                                        transition: 'all 0.3s ease'
-                                    }}
-                                >
-                                    Back to Templates
-                                </Button>
-
-                                <Button
-                                    fullWidth
-                                    variant="outlined"
-                                    onClick={async () => {
-                                        try {
-                                            console.log('Testing backend connection...');
-                                            const response = await axios.get(`${config.BACKEND_URL}${config.ENDPOINTS.QUESTIONNAIRE}?template=cv_1`);
-                                            console.log('✅ Backend is working:', response.data);
-                                            alert('✅ Backend is working! Check console for details.');
-                                        } catch (err) {
-                                            console.error('❌ Backend test failed:', err);
-                                            alert('❌ Backend test failed! Check console for details.');
-                                        }
-                                    }}
-                                    sx={{
-                                        py: 1.5,
-                                        borderColor: 'rgba(255,255,255,0.3)',
-                                        color: 'rgba(255,255,255,0.8)',
+                                        background: 'linear-gradient(45deg, #ffffff, #e3f2fd)',
+                                        backgroundClip: 'text',
+                                        WebkitBackgroundClip: 'text',
+                                        WebkitTextFillColor: 'transparent',
+                                        fontSize: '1.4rem',
+                                        letterSpacing: '0.05em'
+                                    }}>
+                                        🎯 Resume Actions
+                                    </Typography>
+                                    <Box sx={{
+                                        width: 60,
+                                        height: 3,
+                                        background: 'linear-gradient(45deg, #1976d2, #42a5f5)',
                                         borderRadius: 2,
-                                        textTransform: 'none',
-                                        fontWeight: 'bold',
-                                        fontSize: '0.8rem',
-                                        '&:hover': {
-                                            borderColor: 'rgba(255,255,255,0.6)',
-                                            background: 'rgba(255,255,255,0.05)',
-                                            transform: 'translateY(-1px)'
-                                        },
-                                        transition: 'all 0.3s ease'
-                                    }}
-                                >
-                                    Test Backend Connection
-                                </Button>
+                                        mx: 'auto'
+                                    }} />
+                                </Box>
+
+                                {/* Staggered Actions Layout - Full Width */}
+                                <Box sx={{ width: '100%' }}>
+                                    {/* Top Section: Template Info, Form Completion, and Quick Tips */}
+                                    <Box sx={{ display: 'flex', gap: 3, mb: 3 }}>
+                                        {/* Left Side - Template Info and Form Completion */}
+                                        <Box sx={{
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            gap: 2,
+                                            flex: '0 0 40%'
+                                        }}>
+                                            {/* Row 1: Selected Template */}
+                                            <Box sx={{
+                                                p: 3,
+                                                backgroundColor: 'rgba(255,255,255,0.1)',
+                                                borderRadius: 3,
+                                                backdropFilter: 'blur(10px)',
+                                                border: '1px solid rgba(255,255,255,0.2)',
+                                                textAlign: 'center',
+                                                minHeight: '120px',
+                                                display: 'flex',
+                                                flexDirection: 'column',
+                                                justifyContent: 'center'
+                                            }}>
+                                                <Typography variant="body2" color="rgba(255,255,255,0.8)" sx={{ mb: 1, fontSize: '0.9rem' }}>
+                                                    📄 Selected Template
+                                                </Typography>
+                                                <Typography variant="h6" color="white" sx={{
+                                                    fontWeight: 'bold',
+                                                    background: 'linear-gradient(45deg, #ffffff, #e3f2fd)',
+                                                    backgroundClip: 'text',
+                                                    WebkitBackgroundClip: 'text',
+                                                    WebkitTextFillColor: 'transparent'
+                                                }}>
+                                                    {selectedTemplate === 'cv_1' ? '✨ Professional' : '🎨 Creative'}
+                                                </Typography>
+                                            </Box>
+
+                                            {/* Row 2: Form Completion */}
+                                            <Box sx={{
+                                                p: 3,
+                                                backgroundColor: 'rgba(255,255,255,0.08)',
+                                                borderRadius: 3,
+                                                backdropFilter: 'blur(10px)',
+                                                border: '1px solid rgba(255,255,255,0.15)',
+                                                textAlign: 'center',
+                                                minHeight: '120px',
+                                                display: 'flex',
+                                                flexDirection: 'column',
+                                                justifyContent: 'center'
+                                            }}>
+                                                <Typography variant="body2" color="rgba(255,255,255,0.8)" sx={{ mb: 2 }}>
+                                                    📊 Form Completion
+                                                </Typography>
+                                                <Box sx={{
+                                                    width: '100%',
+                                                    height: 8,
+                                                    backgroundColor: 'rgba(255,255,255,0.1)',
+                                                    borderRadius: 4,
+                                                    overflow: 'hidden',
+                                                    position: 'relative'
+                                                }}>
+                                                    <Box sx={{
+                                                        width: '60%',
+                                                        height: '100%',
+                                                        background: 'linear-gradient(45deg, #1976d2, #42a5f5)',
+                                                        borderRadius: 4,
+                                                        transition: 'width 0.3s ease'
+                                                    }} />
+                                                </Box>
+                                                <Typography variant="caption" color="rgba(255,255,255,0.6)" sx={{
+                                                    display: 'block',
+                                                    mt: 1,
+                                                    fontSize: '0.8rem'
+                                                }}>
+                                                    60% Complete
+                                                </Typography>
+                                            </Box>
+                                        </Box>
+
+                                        {/* Right Side - Quick Tips (takes remaining space) */}
+                                        <Box sx={{
+                                            p: 3,
+                                            backgroundColor: 'rgba(255,255,255,0.05)',
+                                            borderRadius: 3,
+                                            border: '1px solid rgba(255,255,255,0.1)',
+                                            borderLeft: '4px solid rgba(255,255,255,0.3)',
+                                            flex: '0 0 60%',
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            justifyContent: 'center',
+                                            px: 4
+                                        }}>
+                                            <Typography variant="h6" color="rgba(255,255,255,0.9)" sx={{
+                                                fontWeight: 'bold',
+                                                mb: 2,
+                                                textAlign: 'center'
+                                            }}>
+                                                💡 Quick Tips
+                                            </Typography>
+                                            <Box component="ul" sx={{
+                                                m: 0,
+                                                pl: 0,
+                                                listStyle: 'none',
+                                                '& li': {
+                                                    color: 'rgba(255,255,255,0.7)',
+                                                    fontSize: '0.9rem',
+                                                    mb: 1.5,
+                                                    lineHeight: 1.5,
+                                                    position: 'relative',
+                                                    paddingLeft: '1.5rem',
+                                                    '&:before': {
+                                                        content: '"•"',
+                                                        position: 'absolute',
+                                                        left: '0.5rem',
+                                                        color: 'rgba(255,255,255,0.8)',
+                                                        fontWeight: 'bold'
+                                                    }
+                                                }
+                                            }}>
+                                                <li><strong>Fill required fields</strong> for best results</li>
+                                                <li><strong>Use keywords</strong> from job descriptions</li>
+                                                <li><strong>Keep descriptions</strong> concise and impactful</li>
+                                                <li><strong>Review carefully</strong> before generating</li>
+                                            </Box>
+                                        </Box>
+                                    </Box>
+
+                                    {/* Bottom Section: All Buttons in One Row */}
+                                    <Box sx={{ display: 'flex', gap: 2, width: '100%' }}>
+                                        <Button
+                                            variant="outlined"
+                                            onClick={() => navigate('/template-selection')}
+                                            startIcon={<ArrowBack />}
+                                            sx={{
+                                                flex: 1,
+                                                py: 2.5,
+                                                borderColor: 'rgba(255,255,255,0.3)',
+                                                color: 'rgba(255,255,255,0.9)',
+                                                borderRadius: 3,
+                                                textTransform: 'none',
+                                                fontWeight: 'bold',
+                                                fontSize: '1rem',
+                                                background: 'rgba(255,255,255,0.05)',
+                                                backdropFilter: 'blur(10px)',
+                                                borderWidth: '2px',
+                                                '&:hover': {
+                                                    borderColor: 'rgba(255,255,255,0.8)',
+                                                    background: 'rgba(255,255,255,0.15)',
+                                                    transform: 'translateY(-2px)',
+                                                    boxShadow: '0 8px 25px rgba(0,0,0,0.3)',
+                                                    borderWidth: '2px'
+                                                },
+                                                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                                            }}
+                                        >
+                                            Back to Templates
+                                        </Button>
+
+                                        <Button
+                                            variant="contained"
+                                            size="large"
+                                            onClick={handleGenerateResume}
+                                            disabled={loading}
+                                            startIcon={loading ? <CircularProgress size={20} color="inherit" /> : <Visibility />}
+                                            sx={{
+                                                flex: 2,
+                                                py: 3,
+                                                fontSize: '1.2rem',
+                                                fontWeight: 'bold',
+                                                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                                                backdropFilter: 'blur(10px)',
+                                                border: '2px solid rgba(255,255,255,0.2)',
+                                                borderRadius: 4,
+                                                textTransform: 'none',
+                                                boxShadow: '0 8px 32px rgba(102, 126, 234, 0.4)',
+                                                position: 'relative',
+                                                overflow: 'hidden',
+                                                '&:before': {
+                                                    content: '""',
+                                                    position: 'absolute',
+                                                    top: 0,
+                                                    left: '-100%',
+                                                    width: '100%',
+                                                    height: '100%',
+                                                    background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)',
+                                                    transition: 'left 0.5s'
+                                                },
+                                                '&:hover': {
+                                                    background: 'linear-gradient(135deg, #764ba2 0%, #667eea 100%)',
+                                                    transform: 'translateY(-3px)',
+                                                    boxShadow: '0 12px 40px rgba(102, 126, 234, 0.6)',
+                                                    '&:before': {
+                                                        left: '100%'
+                                                    }
+                                                },
+                                                '&:disabled': {
+                                                    background: 'rgba(255,255,255,0.1)',
+                                                    color: 'rgba(255,255,255,0.5)',
+                                                    transform: 'none',
+                                                    boxShadow: 'none',
+                                                    '&:before': {
+                                                        display: 'none'
+                                                    }
+                                                },
+                                                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                                            }}
+                                        >
+                                            {loading ? 'Generating...' : 'Generate CV'}
+                                        </Button>
+
+                                        <Button
+                                            variant="outlined"
+                                            onClick={() => navigate('/cover-letter-builder')}
+                                            startIcon={<Description />}
+                                            sx={{
+                                                flex: 1,
+                                                py: 2.5,
+                                                borderColor: 'rgba(255,255,255,0.3)',
+                                                color: 'rgba(255,255,255,0.9)',
+                                                borderRadius: 3,
+                                                textTransform: 'none',
+                                                fontWeight: 'bold',
+                                                fontSize: '1rem',
+                                                background: 'rgba(255,255,255,0.05)',
+                                                backdropFilter: 'blur(10px)',
+                                                borderWidth: '2px',
+                                                '&:hover': {
+                                                    borderColor: 'rgba(255,255,255,0.8)',
+                                                    background: 'rgba(255,255,255,0.15)',
+                                                    transform: 'translateY(-2px)',
+                                                    boxShadow: '0 8px 25px rgba(0,0,0,0.3)',
+                                                    borderWidth: '2px'
+                                                },
+                                                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                                            }}
+                                        >
+                                            Cover Letter
+                                        </Button>
+                                    </Box>
+                                </Box>
                             </Paper>
                         </Fade>
                     </Grid>

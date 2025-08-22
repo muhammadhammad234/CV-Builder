@@ -58,6 +58,15 @@ def check_dependencies():
     
     return True
 
+def check_port_available(port):
+    """Check if a port is available."""
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.bind(('localhost', port))
+            return True
+    except OSError:
+        return False
+
 def check_env_file():
     """Check if .env file exists and has the required API key."""
     env_file = Path(".env")
@@ -112,6 +121,13 @@ class ResumeBuilderApp:
     def start_backend(self):
         """Start the Flask backend server."""
         print("🚀 Starting Flask backend...")
+        
+        # Check if backend is already running
+        if not check_port_available(5001):
+            print("⚠️  Backend is already running on port 5001")
+            print("✅ Backend server is ready")
+            return True
+        
         try:
             self.backend_process = subprocess.Popen([
                 sys.executable, "app.py"

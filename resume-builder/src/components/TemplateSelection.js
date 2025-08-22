@@ -235,6 +235,37 @@ const TemplateSelection = () => {
                     </Zoom>
                 </Box>
             </Fade>
+
+            {/* Back to Tools Button */}
+            <Fade in timeout={1700}>
+                <Box textAlign="center" mt={3}>
+                    <Button
+                        variant="outlined"
+                        size="medium"
+                        onClick={() => navigate('/')}
+                        sx={{
+                            px: 4,
+                            py: 1.5,
+                            fontSize: '1rem',
+                            fontWeight: 'bold',
+                            borderColor: 'rgba(255,255,255,0.3)',
+                            color: 'white',
+                            borderRadius: 2,
+                            textTransform: 'none',
+                            '&:hover': {
+                                borderColor: 'rgba(255,255,255,0.6)',
+                                backgroundColor: 'rgba(255,255,255,0.1)',
+                                transform: 'translateY(-1px)'
+                            },
+                            transition: 'all 0.3s ease'
+                        }}
+                    >
+                        ← Back to Tools
+                    </Button>
+                </Box>
+            </Fade>
+
+
         </Container>
     );
 };

@@ -27,7 +27,42 @@ const ResumePreview = () => {
     useEffect(() => {
         const html = localStorage.getItem('generatedResume');
         if (html) {
-            setResumeHtml(html);
+            // Clean the HTML content to remove any extra quotes or formatting
+            let cleanedHtml = html;
+
+            // Remove surrounding quotes if they exist
+            if (cleanedHtml.startsWith('"') && cleanedHtml.endsWith('"')) {
+                cleanedHtml = cleanedHtml.slice(1, -1);
+            }
+            if (cleanedHtml.startsWith("'") && cleanedHtml.endsWith("'")) {
+                cleanedHtml = cleanedHtml.slice(1, -1);
+            }
+
+            // Remove any markdown code block formatting - more robust approach
+            // Handle ```html at the beginning
+            if (cleanedHtml.includes('```html')) {
+                const startIndex = cleanedHtml.indexOf('```html') + 7;
+                const endIndex = cleanedHtml.lastIndexOf('```');
+                if (endIndex > startIndex) {
+                    cleanedHtml = cleanedHtml.substring(startIndex, endIndex);
+                }
+            }
+            // Handle ``` at the beginning (without html)
+            else if (cleanedHtml.startsWith('```')) {
+                const startIndex = cleanedHtml.indexOf('```') + 3;
+                const endIndex = cleanedHtml.lastIndexOf('```');
+                if (endIndex > startIndex) {
+                    cleanedHtml = cleanedHtml.substring(startIndex, endIndex);
+                }
+            }
+
+            // Trim whitespace
+            cleanedHtml = cleanedHtml.trim();
+
+            console.log('Original HTML:', html.substring(0, 100) + '...');
+            console.log('Cleaned HTML:', cleanedHtml.substring(0, 100) + '...');
+
+            setResumeHtml(cleanedHtml);
         } else {
             setError('No resume found. Please generate a resume first.');
         }
@@ -258,7 +293,7 @@ const ResumePreview = () => {
                             color: '#4caf50',
                             mr: 1
                         }} />
-                        <Typography variant="h6" color="primary" sx={{ fontWeight: 'bold' }}>
+                        <Typography variant="h6" color="white" sx={{ fontWeight: 'bold' }}>
                             Resume Generated Successfully!
                         </Typography>
                     </Box>

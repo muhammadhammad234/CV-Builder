@@ -4,6 +4,16 @@ import google.generativeai as genai
 import os
 import json
 from dotenv import load_dotenv
+from openai import OpenAI
+try:
+    import fitz
+except ImportError:
+    # Fallback for different PyMuPDF versions
+    try:
+        import PyMuPDF as fitz
+    except ImportError:
+        print("Warning: PyMuPDF not available. PDF processing will not work.")
+        fitz = None
 
 # Load environment variables from .env file
 load_dotenv()
@@ -13,15 +23,48 @@ api_key = os.getenv('GEMINI_API_KEY')
 if not api_key:
     raise ValueError("GEMINI_API_KEY not found in environment variables")
 
+
+client = OpenAI(
+    api_key=api_key,
+    base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
+)
+
 genai.configure(api_key=api_key)
 model = genai.GenerativeModel('gemini-2.0-flash')
+
+def clean_html_response(html_content):
+    """Clean HTML response from AI model to remove markdown formatting and quotes."""
+    html_content = html_content.strip()
+    
+    # Remove any markdown formatting if present - more robust approach
+    # Handle ```html at the beginning
+    if '```html' in html_content:
+        start_index = html_content.find('```html') + 7
+        end_index = html_content.rfind('```')
+        if end_index > start_index:
+            html_content = html_content[start_index:end_index].strip()
+    # Handle ``` at the beginning (without html)
+    elif html_content.startswith('```'):
+        start_index = html_content.find('```') + 3
+        end_index = html_content.rfind('```')
+        if end_index > start_index:
+            html_content = html_content[start_index:end_index].strip()
+    
+    # Remove surrounding quotes if they exist
+    if html_content.startswith('"') and html_content.endswith('"'):
+        html_content = html_content[1:-1]
+    elif html_content.startswith("'") and html_content.endswith("'"):
+        html_content = html_content[1:-1]
+    
+    return html_content
 
 # Configuration from environment variables
 PORT = int(os.getenv('PORT', 5001))
 HOST = os.getenv('HOST', '0.0.0.0')  # Changed to 0.0.0.0 to allow external connections
-DEBUG = os.getenv('DEBUG', 'True').lower() == 'true'
+DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
 
 app = Flask(__name__, template_folder="templates")
+CORS(app)
 
 
 def load_template(template_name, folder="Templates"):
@@ -141,7 +184,7 @@ def generate_cv():
     answers = data.get("questionnaire", {})
 
     template_file = f"{template_choice}.html"
-    cv_template = load_template(template_file)
+    cv_template = load_template(template_file, folder="cv")
 
     prompt = (
         "Fill this HTML CV template with the given JSON user data. "
@@ -154,15 +197,29 @@ def generate_cv():
         + cv_template + "\nUserData:\n" + json.dumps(answers)
     )
 
-    response = model.generate_content(prompt)
-    return response.text, 200, {'Content-Type': 'text/html'}
+    
+    response = client.chat.completions.create(
+        model="gemini-1.5-flash",
+        messages=[
+            {"role": "system", "content": "You are a helpful cv maker assitant."},
+            {
+                "role": "user",
+                "content": prompt
+            }
+        ]
+    )
+
+    # Clean the response content to ensure it's proper HTML
+    html_content = clean_html_response(response.choices[0].message.content)
+    
+    return html_content, 200, {'Content-Type': 'text/html'}
 
 
 QUESTIONNAIRE_CL = {
     "job": {
         "job_description": "Paste the job description here.",
         "company": "What is the company name?",
-        "hr_name": "What is the HR manager’s name? (optional, if known)",
+        "hr_name": "What is the HR manager's name? (optional, if known)",
         "date": "What is the application date?"
     },
     "applicant": {
@@ -217,9 +274,85 @@ def generate_cover_letter():
         + json.dumps({"job": job_data, "applicant": applicant_data})
     )
 
-    response = model.generate_content(prompt)
-    return response.text, 200, {'Content-Type': 'text/html'}
+    
+    response = client.chat.completions.create(
+        model="gemini-1.5-flash",
+        messages=[
+            {"role": "system", "content": "You are a helpful cv maker assitant."},
+            {
+                "role": "user",
+                "content": prompt
+            }
+        ]
+    )
+
+    # Clean the response content to ensure it's proper HTML
+    html_content = clean_html_response(response.choices[0].message.content)
+    
+    return html_content, 200, {'Content-Type': 'text/html'}
+
+def extract_text_from_pdf(pdf_file):
+    """Extract text from uploaded PDF."""
+    if fitz is None:
+        raise ValueError("PyMuPDF not available. Cannot process PDF files.")
+    
+    text = ""
+    with fitz.open(stream=pdf_file.read(), filetype="pdf") as doc:
+        for page in doc:
+            text += page.get_text("text")
+    return text
+
+@app.route('/generate-ats-score', methods=['POST'])
+def generate_ats_score():
+    """
+    User uploads a CV (PDF) + Job Description (text).
+    The system extracts CV text, compares with JD, and generates an ATS score with breakdown in HTML.
+    """
+    if 'cv' not in request.files:
+        return jsonify({"error": "Missing CV PDF file"}), 400
+
+    cv_file = request.files['cv']
+    job_description = request.form.get("job_description", "")
+
+    if not job_description:
+        return jsonify({"error": "Missing Job Description"}), 400
+
+    cv_text = extract_text_from_pdf(cv_file)
+
+    prompt = f"""
+You are an ATS (Applicant Tracking System) evaluator. 
+Compare the following CV with the Job Description and provide an ATS compatibility score (0-100).  
+Return the result in **HTML format** with the following sections:
+
+1. **Overall ATS Score** (percentage with color bar)  
+2. **Matched Keywords** (list of important job-specific keywords found in CV)  
+3. **Missing Keywords** (keywords required by JD but missing in CV)  
+4. **Skills Match** (match rate and table of skills: CV vs JD)  
+5. **Experience Match** (how relevant the experience is, 1-2 sentences + percentage)  
+6. **Education Match** (short analysis + percentage)  
+7. **Suggestions for Improvement** (bullet points for enhancing CV to improve score)
+
+CV Text:
+{cv_text}
+
+Job Description:
+{job_description}
+    """
+
+    response = client.chat.completions.create(
+        model="gemini-1.5-flash",
+        messages=[
+            {"role": "system", "content": "You are an ATS scoring assistant that outputs results in HTML format only."},
+            {"role": "user", "content": prompt}
+        ]
+    )
+
+    # Clean the response content to ensure it's proper HTML
+    html_content = clean_html_response(response.choices[0].message.content)
+    
+    return html_content, 200, {'Content-Type': 'text/html'}
+
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host=HOST, port=PORT, debug=DEBUG)
 
