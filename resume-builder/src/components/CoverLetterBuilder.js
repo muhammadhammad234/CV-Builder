@@ -243,249 +243,247 @@ const CoverLetterBuilder = () => {
                     </Fade>
                 )}
 
-                <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                    <Grid container spacing={3} sx={{ flex: 1, minHeight: 0 }}>
-                        <Grid item xs={12} lg={8} sx={{ display: 'flex', flexDirection: 'column' }}>
-                            {/* Job Information */}
-                            <Grow in timeout={600}>
-                                <Paper sx={{
-                                    p: { xs: 2, sm: 3, md: 4 },
-                                    mb: 3,
-                                    borderRadius: 3,
-                                    background: 'rgba(255, 255, 255, 0.08)',
-                                    backdropFilter: 'blur(20px)',
-                                    border: '1px solid rgba(255, 255, 255, 0.15)',
-                                    color: 'white',
-                                    boxShadow: '0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1)',
-                                    flex: 1
-                                }}>
-                                    <Typography variant="h5" color="white" gutterBottom sx={{ fontWeight: 'bold', mb: 3 }}>
-                                        💼 Job Information
-                                    </Typography>
+                <Grid container spacing={4} sx={{ width: '100%', justifyContent: 'center' }}>
+                    <Grid item xs={12}>
+                        {/* Job Information */}
+                        <Grow in timeout={600}>
+                            <Paper sx={{
+                                p: 4,
+                                mb: 4,
+                                borderRadius: 3,
+                                background: 'rgba(255, 255, 255, 0.08)',
+                                backdropFilter: 'blur(20px)',
+                                border: '1px solid rgba(255, 255, 255, 0.15)',
+                                color: 'white',
+                                boxShadow: '0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1)'
+                            }}>
+                                <Typography variant="h5" color="white" gutterBottom sx={{ fontWeight: 'bold', mb: 3 }}>
+                                    💼 Job Information
+                                </Typography>
 
-                                    <Grid container spacing={3}>
-                                        {/* Row 1: Company Name */}
-                                        <Grid item xs={12}>
-                                            {renderField('job', 'company', 'Company Name')}
-                                        </Grid>
-
-                                        {/* Row 2: Application Date */}
-                                        <Grid item xs={12}>
-                                            {renderField('job', 'date', 'Application Date', 'date')}
-                                        </Grid>
-
-                                        {/* Row 3: HR Manager Name */}
-                                        <Grid item xs={12}>
-                                            {renderField('job', 'hr_name', 'HR Manager Name (Optional)')}
-                                        </Grid>
-
-                                        {/* Row 4-6: Job Description */}
-                                        <Grid item xs={12}>
-                                            {renderField('job', 'job_description', 'Job Description', 'text', true, 6)}
-                                        </Grid>
+                                {/* Row 1: Company Name */}
+                                <Grid container spacing={3} sx={{ mb: 3, width: '100%', display: 'flex' }}>
+                                    <Grid item xs={12} sx={{ flex: 1, minWidth: 0 }}>
+                                        {renderField('job', 'company', 'Company Name')}
                                     </Grid>
+                                </Grid>
 
-
-
-                                </Paper>
-                            </Grow>
-
-                            {/* Applicant Information */}
-                            <Grow in timeout={700}>
-                                <Paper sx={{
-                                    p: { xs: 2, sm: 3, md: 4 },
-                                    mb: 3,
-                                    borderRadius: 3,
-                                    background: 'rgba(255, 255, 255, 0.08)',
-                                    backdropFilter: 'blur(20px)',
-                                    border: '1px solid rgba(255, 255, 255, 0.15)',
-                                    color: 'white',
-                                    boxShadow: '0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1)',
-                                    flex: 1
-                                }}>
-                                    <Typography variant="h5" color="white" gutterBottom sx={{ fontWeight: 'bold', mb: 3 }}>
-                                        👤 Your Information
-                                    </Typography>
-
-                                    <Grid container spacing={3}>
-                                        {/* Row 1: Full Name, Job Title/Designation */}
-                                        <Grid item xs={12} md={6}>
-                                            {renderField('applicant', 'name', 'Full Name')}
-                                        </Grid>
-                                        <Grid item xs={12} md={6}>
-                                            {renderField('applicant', 'designation', 'Job Title/Designation')}
-                                        </Grid>
-
-                                        {/* Row 2: Email Address, Phone Number, Home Address */}
-                                        <Grid item xs={12} md={4}>
-                                            {renderField('applicant', 'email', 'Email Address')}
-                                        </Grid>
-                                        <Grid item xs={12} md={4}>
-                                            {renderField('applicant', 'phone', 'Phone Number')}
-                                        </Grid>
-                                        <Grid item xs={12} md={4}>
-                                            {renderField('applicant', 'address', 'Home Address')}
-                                        </Grid>
-
-                                        {/* Row 3: Key Skills, Relevant Past Experience */}
-                                        <Grid item xs={12} md={6}>
-                                            {renderField('applicant', 'skills', 'Key Skills (comma separated)', 'text', true, 3)}
-                                        </Grid>
-                                        <Grid item xs={12} md={6}>
-                                            {renderField('applicant', 'past_experience', 'Relevant Past Experience', 'text', true, 4)}
-                                        </Grid>
+                                {/* Row 2: Application Date */}
+                                <Grid container spacing={3} sx={{ mb: 3, width: '100%', display: 'flex' }}>
+                                    <Grid item xs={12} sx={{ flex: 1, minWidth: 0 }}>
+                                        {renderField('job', 'date', 'Application Date', 'date')}
                                     </Grid>
-                                </Paper>
-                            </Grow>
-                        </Grid>
+                                </Grid>
 
-                        {/* Sidebar */}
-                        <Grid item xs={12} lg={4} sx={{ display: 'flex', flexDirection: 'column' }}>
-                            <Fade in timeout={1200}>
-                                <Paper sx={{
-                                    p: { xs: 2, sm: 3, md: 4 },
-                                    position: 'sticky',
-                                    top: 20,
-                                    borderRadius: 3,
-                                    background: 'rgba(255,255,255,0.08)',
-                                    backdropFilter: 'blur(20px)',
-                                    border: '1px solid rgba(255,255,255,0.15)',
-                                    color: 'white',
-                                    boxShadow: '0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1)',
-                                    height: 'fit-content'
+                                {/* Row 3: HR Manager Name */}
+                                <Grid container spacing={3} sx={{ mb: 3, width: '100%', display: 'flex' }}>
+                                    <Grid item xs={12} sx={{ flex: 1, minWidth: 0 }}>
+                                        {renderField('job', 'hr_name', 'HR Manager Name (Optional)')}
+                                    </Grid>
+                                </Grid>
+
+                                {/* Row 4-6: Job Description */}
+                                <Grid container spacing={3} sx={{ mb: 3, width: '100%', display: 'flex' }}>
+                                    <Grid item xs={12} sx={{ flex: 1, minWidth: 0 }}>
+                                        {renderField('job', 'job_description', 'Job Description', 'text', true, 6)}
+                                    </Grid>
+                                </Grid>
+                            </Paper>
+                        </Grow>
+
+                        {/* Applicant Information */}
+                        <Grow in timeout={700}>
+                            <Paper sx={{
+                                p: 4,
+                                mb: 4,
+                                borderRadius: 3,
+                                background: 'rgba(255, 255, 255, 0.08)',
+                                backdropFilter: 'blur(20px)',
+                                border: '1px solid rgba(255, 255, 255, 0.15)',
+                                color: 'white',
+                                boxShadow: '0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1)'
+                            }}>
+                                <Typography variant="h5" color="white" gutterBottom sx={{ fontWeight: 'bold', mb: 3 }}>
+                                    👤 Your Information
+                                </Typography>
+
+                                {/* Row 1: Full Name, Job Title/Designation */}
+                                <Grid container spacing={3} sx={{ mb: 3, width: '100%', display: 'flex' }}>
+                                    <Grid item xs={12} md={6} sx={{ flex: 1, minWidth: 0 }}>
+                                        {renderField('applicant', 'name', 'Full Name')}
+                                    </Grid>
+                                    <Grid item xs={12} md={6} sx={{ flex: 1, minWidth: 0 }}>
+                                        {renderField('applicant', 'designation', 'Job Title/Designation')}
+                                    </Grid>
+                                </Grid>
+
+                                {/* Row 2: Email Address, Phone Number, Home Address */}
+                                <Grid container spacing={3} sx={{ mb: 3, width: '100%', display: 'flex' }}>
+                                    <Grid item xs={12} md={4} sx={{ flex: 1, minWidth: 0 }}>
+                                        {renderField('applicant', 'email', 'Email Address')}
+                                    </Grid>
+                                    <Grid item xs={12} md={4} sx={{ flex: 1, minWidth: 0 }}>
+                                        {renderField('applicant', 'phone', 'Phone Number')}
+                                    </Grid>
+                                    <Grid item xs={12} md={4} sx={{ flex: 1, minWidth: 0 }}>
+                                        {renderField('applicant', 'address', 'Home Address')}
+                                    </Grid>
+                                </Grid>
+
+                                {/* Row 3: Key Skills, Relevant Past Experience */}
+                                <Grid container spacing={3} sx={{ mb: 3, width: '100%', display: 'flex' }}>
+                                    <Grid item xs={12} md={6} sx={{ flex: 1, minWidth: 0 }}>
+                                        {renderField('applicant', 'skills', 'Key Skills (comma separated)', 'text', true, 4)}
+                                    </Grid>
+                                    <Grid item xs={12} md={6} sx={{ flex: 1, minWidth: 0 }}>
+                                        {renderField('applicant', 'past_experience', 'Relevant Past Experience', 'text', true, 4)}
+                                    </Grid>
+                                </Grid>
+                            </Paper>
+                        </Grow>
+
+                        {/* Cover Letter Actions */}
+                        <Fade in timeout={1200}>
+                            <Paper sx={{
+                                p: 4,
+                                borderRadius: 3,
+                                background: 'rgba(255,255,255,0.08)',
+                                backdropFilter: 'blur(20px)',
+                                border: '1px solid rgba(255,255,255,0.15)',
+                                color: 'white',
+                                boxShadow: '0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1)'
+                            }}>
+                                <Typography variant="h5" color="white" gutterBottom sx={{ fontWeight: 'bold', mb: 3 }}>
+                                    Cover Letter Actions
+                                </Typography>
+
+                                <Box mb={3} sx={{
+                                    p: 2,
+                                    backgroundColor: 'rgba(255,255,255,0.1)',
+                                    borderRadius: 2,
+                                    backdropFilter: 'blur(10px)'
                                 }}>
-                                    <Typography variant="h5" color="white" gutterBottom sx={{ fontWeight: 'bold', mb: 3 }}>
-                                        Cover Letter Actions
+                                    <Typography variant="body1" color="white" sx={{ fontWeight: 'bold' }}>
+                                        Template: <strong>Professional Cover Letter</strong>
                                     </Typography>
+                                </Box>
 
-                                    <Box mb={3} sx={{
-                                        p: 2,
-                                        backgroundColor: 'rgba(255,255,255,0.1)',
-                                        borderRadius: 2,
-                                        backdropFilter: 'blur(10px)'
-                                    }}>
-                                        <Typography variant="body1" color="white" sx={{ fontWeight: 'bold' }}>
-                                            Template: <strong>Professional Cover Letter</strong>
-                                        </Typography>
-                                    </Box>
+                                {/* Bottom Section: All Buttons in One Row */}
+                                <Box sx={{ display: 'flex', gap: 2, width: '100%' }}>
+                                    <Button
+                                        variant="outlined"
+                                        onClick={() => navigate('/')}
+                                        startIcon={<ArrowBack />}
+                                        sx={{
+                                            flex: 1,
+                                            py: 2.5,
+                                            borderColor: 'rgba(255,255,255,0.3)',
+                                            color: 'rgba(255,255,255,0.9)',
+                                            borderRadius: 3,
+                                            textTransform: 'none',
+                                            fontWeight: 'bold',
+                                            fontSize: '1rem',
+                                            background: 'rgba(255,255,255,0.05)',
+                                            backdropFilter: 'blur(10px)',
+                                            borderWidth: '2px',
+                                            '&:hover': {
+                                                borderColor: 'rgba(255,255,255,0.8)',
+                                                background: 'rgba(255,255,255,0.15)',
+                                                transform: 'translateY(-2px)',
+                                                boxShadow: '0 8px 25px rgba(0,0,0,0.3)',
+                                                borderWidth: '2px'
+                                            },
+                                            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                                        }}
+                                    >
+                                        Back to Tools
+                                    </Button>
 
-                                    {/* Bottom Section: All Buttons in One Row */}
-                                    <Box sx={{ display: 'flex', gap: 2, width: '100%' }}>
-                                        <Button
-                                            variant="outlined"
-                                            onClick={() => navigate('/')}
-                                            startIcon={<ArrowBack />}
-                                            sx={{
-                                                flex: 1,
-                                                py: 2.5,
-                                                borderColor: 'rgba(255,255,255,0.3)',
-                                                color: 'rgba(255,255,255,0.9)',
-                                                borderRadius: 3,
-                                                textTransform: 'none',
-                                                fontWeight: 'bold',
-                                                fontSize: '1rem',
-                                                background: 'rgba(255,255,255,0.05)',
-                                                backdropFilter: 'blur(10px)',
-                                                borderWidth: '2px',
-                                                '&:hover': {
-                                                    borderColor: 'rgba(255,255,255,0.8)',
-                                                    background: 'rgba(255,255,255,0.15)',
-                                                    transform: 'translateY(-2px)',
-                                                    boxShadow: '0 8px 25px rgba(0,0,0,0.3)',
-                                                    borderWidth: '2px'
-                                                },
-                                                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
-                                            }}
-                                        >
-                                            Back to Tools
-                                        </Button>
-
-                                        <Button
-                                            variant="contained"
-                                            size="large"
-                                            onClick={handleGenerateCoverLetter}
-                                            disabled={loading}
-                                            startIcon={loading ? <CircularProgress size={20} color="inherit" /> : <Visibility />}
-                                            sx={{
-                                                flex: 2,
-                                                py: 3,
-                                                fontSize: '1.2rem',
-                                                fontWeight: 'bold',
-                                                background: 'linear-gradient(135deg, #4caf50 0%, #8bc34a 100%)',
-                                                backdropFilter: 'blur(10px)',
-                                                border: '2px solid rgba(255,255,255,0.2)',
-                                                borderRadius: 4,
-                                                textTransform: 'none',
-                                                boxShadow: '0 8px 32px rgba(76, 175, 80, 0.4)',
-                                                position: 'relative',
-                                                overflow: 'hidden',
+                                    <Button
+                                        variant="contained"
+                                        size="large"
+                                        onClick={handleGenerateCoverLetter}
+                                        disabled={loading}
+                                        startIcon={loading ? <CircularProgress size={20} color="inherit" /> : <Visibility />}
+                                        sx={{
+                                            flex: 2,
+                                            py: 3,
+                                            fontSize: '1.2rem',
+                                            fontWeight: 'bold',
+                                            background: 'linear-gradient(135deg, #4caf50 0%, #8bc34a 100%)',
+                                            backdropFilter: 'blur(10px)',
+                                            border: '2px solid rgba(255,255,255,0.2)',
+                                            borderRadius: 4,
+                                            textTransform: 'none',
+                                            boxShadow: '0 8px 32px rgba(76, 175, 80, 0.4)',
+                                            position: 'relative',
+                                            overflow: 'hidden',
+                                            '&:before': {
+                                                content: '""',
+                                                position: 'absolute',
+                                                top: 0,
+                                                left: '-100%',
+                                                width: '100%',
+                                                height: '100%',
+                                                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)',
+                                                transition: 'left 0.5s'
+                                            },
+                                            '&:hover': {
+                                                background: 'linear-gradient(135deg, #8bc34a 0%, #4caf50 100%)',
+                                                transform: 'translateY(-3px)',
+                                                boxShadow: '0 12px 40px rgba(76, 175, 80, 0.6)',
                                                 '&:before': {
-                                                    content: '""',
-                                                    position: 'absolute',
-                                                    top: 0,
-                                                    left: '-100%',
-                                                    width: '100%',
-                                                    height: '100%',
-                                                    background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)',
-                                                    transition: 'left 0.5s'
-                                                },
-                                                '&:hover': {
-                                                    background: 'linear-gradient(135deg, #8bc34a 0%, #4caf50 100%)',
-                                                    transform: 'translateY(-3px)',
-                                                    boxShadow: '0 12px 40px rgba(76, 175, 80, 0.6)',
-                                                    '&:before': {
-                                                        left: '100%'
-                                                    }
-                                                },
-                                                '&:disabled': {
-                                                    background: 'rgba(255,255,255,0.1)',
-                                                    color: 'rgba(255,255,255,0.5)',
-                                                    transform: 'none',
-                                                    boxShadow: 'none',
-                                                    '&:before': {
-                                                        display: 'none'
-                                                    }
-                                                },
-                                                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
-                                            }}
-                                        >
-                                            {loading ? 'Generating...' : 'Generate Cover Letter'}
-                                        </Button>
+                                                    left: '100%'
+                                                }
+                                            },
+                                            '&:disabled': {
+                                                background: 'rgba(255,255,255,0.1)',
+                                                color: 'rgba(255,255,255,0.5)',
+                                                transform: 'none',
+                                                boxShadow: 'none',
+                                                '&:before': {
+                                                    display: 'none'
+                                                }
+                                            },
+                                            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                                        }}
+                                    >
+                                        {loading ? 'Generating...' : 'Generate Cover Letter'}
+                                    </Button>
 
-                                        <Button
-                                            variant="outlined"
-                                            onClick={() => navigate('/template-selection')}
-                                            startIcon={<Description />}
-                                            sx={{
-                                                flex: 1,
-                                                py: 2.5,
-                                                borderColor: 'rgba(255,255,255,0.3)',
-                                                color: 'rgba(255,255,255,0.9)',
-                                                borderRadius: 3,
-                                                textTransform: 'none',
-                                                fontWeight: 'bold',
-                                                fontSize: '1rem',
-                                                background: 'rgba(255,255,255,0.05)',
-                                                backdropFilter: 'blur(10px)',
-                                                borderWidth: '2px',
-                                                '&:hover': {
-                                                    borderColor: 'rgba(255,255,255,0.8)',
-                                                    background: 'rgba(255,255,255,0.15)',
-                                                    transform: 'translateY(-2px)',
-                                                    boxShadow: '0 8px 25px rgba(0,0,0,0.3)',
-                                                    borderWidth: '2px'
-                                                },
-                                                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
-                                            }}
-                                        >
-                                            Build Resume
-                                        </Button>
-                                    </Box>
-                                </Paper>
-                            </Fade>
-                        </Grid>
+                                    <Button
+                                        variant="outlined"
+                                        onClick={() => navigate('/template-selection')}
+                                        startIcon={<Description />}
+                                        sx={{
+                                            flex: 1,
+                                            py: 2.5,
+                                            borderColor: 'rgba(255,255,255,0.3)',
+                                            color: 'rgba(255,255,255,0.9)',
+                                            borderRadius: 3,
+                                            textTransform: 'none',
+                                            fontWeight: 'bold',
+                                            fontSize: '1rem',
+                                            background: 'rgba(255,255,255,0.05)',
+                                            backdropFilter: 'blur(10px)',
+                                            borderWidth: '2px',
+                                            '&:hover': {
+                                                borderColor: 'rgba(255,255,255,0.8)',
+                                                background: 'rgba(255,255,255,0.15)',
+                                                transform: 'translateY(-2px)',
+                                                boxShadow: '0 8px 25px rgba(0,0,0,0.3)',
+                                                borderWidth: '2px'
+                                            },
+                                            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                                        }}
+                                    >
+                                        Build Resume
+                                    </Button>
+                                </Box>
+                            </Paper>
+                        </Fade>
                     </Grid>
-                </Box>
+                </Grid>
             </Container>
         </Box>
     );
