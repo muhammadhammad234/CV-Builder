@@ -1,6 +1,5 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import google.generativeai as genai
 import os
 import json
 from dotenv import load_dotenv
@@ -19,17 +18,12 @@ except ImportError:
 load_dotenv()
 
 # Get API key from environment variable
-api_key = os.getenv('GEMINI_API_KEY')
+api_key = os.getenv('OPENAI_API_KEY')
 if not api_key:
-    raise ValueError("GEMINI_API_KEY not found in environment variables")
+    raise ValueError("OPENAI_API_KEY not found in environment variables")
 
-
-client = OpenAI(
-    api_key=api_key
-)
-
-genai.configure(api_key=api_key)
-model = genai.GenerativeModel('gemini-2.0-flash')
+# Configure OpenAI client
+client = OpenAI(api_key=api_key)
 
 def clean_html_response(html_content):
     """Clean HTML response from AI model to remove markdown formatting and quotes."""
@@ -198,9 +192,9 @@ def generate_cv():
 
     
     response = client.chat.completions.create(
-        model="gpt-5",
+        model="gpt-4o",
         messages=[
-            {"role": "system", "content": "You are a helpful cv maker assitant."},
+            {"role": "system", "content": "You are a helpful cv maker assistant."},
             {
                 "role": "user",
                 "content": prompt
@@ -298,9 +292,9 @@ UserData (use only this data):
 
     
     response = client.chat.completions.create(
-        model="gpt-5",
+        model="gpt-4o",
         messages=[
-            {"role": "system", "content": "You are a helpful cv maker assitant."},
+            {"role": "system", "content": "You are a helpful cv maker assistant."},
             {
                 "role": "user",
                 "content": prompt
@@ -372,7 +366,7 @@ Job Description:
     """
 
     response = client.chat.completions.create(
-        model="gpt-5",
+        model="gpt-4o",
         messages=[
             {"role": "system", "content": "You are an ATS scoring assistant that outputs results in HTML format only."},
             {"role": "user", "content": prompt}
@@ -494,7 +488,7 @@ Job Description:
 
     try:
         response = client.chat.completions.create(
-            model="gpt-5",
+            model="gpt-4o",
             messages=[
                 {"role": "system", "content": "You are an ATS analysis assistant that outputs results in HTML format only."},
                 {"role": "user", "content": prompt}
@@ -543,7 +537,7 @@ Job Description:
     """
 
     response = client.chat.completions.create(
-        model="gpt-5",
+        model="gpt-4o",
         messages=[
             {"role": "system", "content": "You are a resume generation assistant that outputs results in HTML format only."},
             {"role": "user", "content": prompt}
