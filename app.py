@@ -25,8 +25,7 @@ if not api_key:
 
 
 client = OpenAI(
-    api_key=api_key,
-    base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
+    api_key=api_key
 )
 
 genai.configure(api_key=api_key)
@@ -199,7 +198,7 @@ def generate_cv():
 
     
     response = client.chat.completions.create(
-        model="gemini-1.5-flash",
+        model="gpt-5",
         messages=[
             {"role": "system", "content": "You are a helpful cv maker assitant."},
             {
@@ -266,7 +265,7 @@ def generate_cover_letter():
     print("Applicant data:", json.dumps(applicant_data, indent=2))
 
     template_file = f"{template_choice}.html"
-    cl_template = load_template(template_file, folder="Cover_Letter")
+    cl_template = load_template(template_file, folder="cl")
 
     prompt = f"""You are given an HTML Cover Letter template with placeholders and JSON user data. 
 Your task is to generate the FINAL cover letter HTML by REPLACING ALL PLACEHOLDERS with the user's data.
@@ -299,7 +298,7 @@ UserData (use only this data):
 
     
     response = client.chat.completions.create(
-        model="gemini-1.5-flash",
+        model="gpt-5",
         messages=[
             {"role": "system", "content": "You are a helpful cv maker assitant."},
             {
@@ -373,7 +372,7 @@ Job Description:
     """
 
     response = client.chat.completions.create(
-        model="gemini-1.5-flash",
+        model="gpt-5",
         messages=[
             {"role": "system", "content": "You are an ATS scoring assistant that outputs results in HTML format only."},
             {"role": "user", "content": prompt}
@@ -495,7 +494,7 @@ Job Description:
 
     try:
         response = client.chat.completions.create(
-            model="gemini-1.5-flash",
+            model="gpt-5",
             messages=[
                 {"role": "system", "content": "You are an ATS analysis assistant that outputs results in HTML format only."},
                 {"role": "user", "content": prompt}
@@ -544,7 +543,7 @@ Job Description:
     """
 
     response = client.chat.completions.create(
-        model="gemini-1.5-flash",
+        model="gpt-5",
         messages=[
             {"role": "system", "content": "You are a resume generation assistant that outputs results in HTML format only."},
             {"role": "user", "content": prompt}
