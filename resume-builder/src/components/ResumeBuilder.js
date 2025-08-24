@@ -253,6 +253,9 @@ const ResumeBuilder = () => {
                     },
                     '& .MuiInputBase-input': {
                         color: '#ffffff'
+                    },
+                    '& .MuiFormHelperText-root': {
+                        color: 'rgba(255,255,255,0.8) !important'
                     }
                 }}
             />
@@ -697,6 +700,9 @@ const ResumeBuilder = () => {
                                         },
                                         '& .MuiInputBase-input': {
                                             color: '#ffffff'
+                                        },
+                                        '& .MuiFormHelperText-root': {
+                                            color: 'rgba(255,255,255,0.8) !important'
                                         }
                                     }}
                                 />

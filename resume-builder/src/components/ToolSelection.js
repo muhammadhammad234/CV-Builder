@@ -88,6 +88,10 @@ const ToolSelection = () => {
     const navigate = useNavigate();
 
     const handleToolSelect = (tool) => {
+        // Clear stored form data when starting a new tool
+        if (tool.id === 'cover-letter') {
+            localStorage.removeItem('coverLetterFormData');
+        }
         // Immediately navigate to the selected tool
         navigate(tool.route);
     };

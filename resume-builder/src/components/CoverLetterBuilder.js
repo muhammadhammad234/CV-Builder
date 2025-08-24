@@ -21,23 +21,40 @@ import config from '../config';
 
 const CoverLetterBuilder = () => {
     const navigate = useNavigate();
-    const [formData, setFormData] = useState({
-        job: {
-            job_description: '',
-            company: '',
-            hr_name: '',
-            date: ''
-        },
-        applicant: {
-            name: '',
-            designation: '',
-            email: '',
-            phone: '',
-            address: '',
-            past_experience: '',
-            skills: ''
+
+    // Check for existing form data from localStorage
+    const getInitialFormData = () => {
+        const storedData = localStorage.getItem('coverLetterFormData');
+        if (storedData) {
+            try {
+                return JSON.parse(storedData);
+            } catch (error) {
+                console.error('Error parsing stored form data:', error);
+            }
         }
-    });
+
+        // Return default empty form data
+        return {
+            job: {
+                job_description: '',
+                company: '',
+                hr_name: '',
+                date: '',
+                job_found: ''
+            },
+            applicant: {
+                name: '',
+                designation: '',
+                email: '',
+                phone: '',
+                address: '',
+                past_experience: '',
+                skills: ''
+            }
+        };
+    };
+
+    const [formData, setFormData] = useState(getInitialFormData);
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
@@ -91,6 +108,7 @@ const CoverLetterBuilder = () => {
             console.log('Sending request to backend...');
             console.log('Request URL:', `${config.BACKEND_URL}${config.ENDPOINTS.GENERATE_COVER_LETTER}`);
             console.log('Request Payload:', JSON.stringify(payload, null, 2));
+            console.log('Form Data for debugging:', JSON.stringify(formData, null, 2));
 
             const response = await axios.post(`${config.BACKEND_URL}${config.ENDPOINTS.GENERATE_COVER_LETTER}`, payload, {
                 headers: {
@@ -108,7 +126,9 @@ const CoverLetterBuilder = () => {
             if (response.data && typeof response.data === 'string' && response.data.length > 100) {
                 // Store the generated HTML in localStorage for preview
                 localStorage.setItem('generatedCoverLetter', response.data);
-                console.log('✅ Cover letter data stored successfully');
+                // Store the form data for editing
+                localStorage.setItem('coverLetterFormData', JSON.stringify(formData));
+                console.log('✅ Cover letter data and form data stored successfully');
                 console.log('Navigating to preview page...');
                 navigate('/cover-letter-preview');
             } else {
@@ -282,7 +302,14 @@ const CoverLetterBuilder = () => {
                                     </Grid>
                                 </Grid>
 
-                                {/* Row 4-6: Job Description */}
+                                {/* Row 4: How did you find this job */}
+                                <Grid container spacing={3} sx={{ mb: 3, width: '100%', display: 'flex' }}>
+                                    <Grid item xs={12} sx={{ flex: 1, minWidth: 0 }}>
+                                        {renderField('job', 'job_found', 'How did you find this job? (Optional)')}
+                                    </Grid>
+                                </Grid>
+
+                                {/* Row 5-7: Job Description */}
                                 <Grid container spacing={3} sx={{ mb: 3, width: '100%', display: 'flex' }}>
                                     <Grid item xs={12} sx={{ flex: 1, minWidth: 0 }}>
                                         {renderField('job', 'job_description', 'Job Description', 'text', true, 6)}

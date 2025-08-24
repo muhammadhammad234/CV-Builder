@@ -15,7 +15,9 @@ const config = {
         GENERATE_CV: '/generate-cv',
         GENERATE_COVER_LETTER: '/generate-cover-letter',
         QUESTIONNAIRE_COVER_LETTER: '/questionnaire-cover-letter',
-        GENERATE_ATS_SCORE: '/generate-ats-score'
+        GENERATE_ATS_SCORE: '/generate-ats-score',
+        ATS_ANALYZE: '/ats-analyze',
+        GENERATE_RESUME_FROM_JOB: '/generate-resume-from-job'
     }
 };
 

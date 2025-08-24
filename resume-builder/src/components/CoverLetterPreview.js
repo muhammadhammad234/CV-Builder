@@ -120,215 +120,305 @@ const CoverLetterPreview = () => {
     };
 
     const handleEdit = () => {
+        // Keep the form data in localStorage for pre-filling
+        // The CoverLetterBuilder will load it automatically
         navigate('/cover-letter-builder');
     };
 
     if (error) {
         return (
-            <Container maxWidth="lg" sx={{ py: 4 }}>
-                <Fade in timeout={300}>
-                    <Alert severity="error" sx={{ mb: 3, borderRadius: 2 }}>
-                        {error}
-                    </Alert>
-                </Fade>
-                <Button
-                    variant="contained"
-                    onClick={() => navigate('/cover-letter-builder')}
-                    startIcon={<ArrowBack />}
-                    sx={{ borderRadius: 2 }}
-                >
-                    Back to Cover Letter Builder
-                </Button>
-            </Container>
+            <Box sx={{
+                minHeight: '100vh',
+                width: '100%',
+                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                position: 'relative',
+                '&::before': {
+                    content: '""',
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    background: 'url("data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.05"%3E%3Ccircle cx="30" cy="30" r="2"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")',
+                    pointerEvents: 'none'
+                }
+            }}>
+                <Container maxWidth="lg" sx={{
+                    py: 4,
+                    position: 'relative',
+                    zIndex: 1
+                }}>
+                    <Fade in timeout={300}>
+                        <Alert severity="error" sx={{
+                            mb: 3,
+                            borderRadius: 2,
+                            background: 'rgba(255, 255, 255, 0.1)',
+                            backdropFilter: 'blur(10px)',
+                            border: '1px solid rgba(255, 255, 255, 0.2)'
+                        }}>
+                            {error}
+                        </Alert>
+                    </Fade>
+                    <Button
+                        variant="outlined"
+                        onClick={() => navigate('/cover-letter-builder')}
+                        startIcon={<ArrowBack />}
+                        sx={{
+                            borderRadius: 3,
+                            borderColor: 'rgba(255,255,255,0.3)',
+                            color: 'rgba(255,255,255,0.9)',
+                            backdropFilter: 'blur(10px)',
+                            borderWidth: '2px',
+                            '&:hover': {
+                                borderColor: 'rgba(255,255,255,0.8)',
+                                background: 'rgba(255,255,255,0.15)'
+                            }
+                        }}
+                    >
+                        Back to Cover Letter Builder
+                    </Button>
+                </Container>
+            </Box>
         );
     }
 
     return (
-        <Container maxWidth="lg" sx={{ py: 4 }}>
-            <Fade in timeout={800}>
-                <Box mb={4}>
-                    <Slide direction="down" in timeout={600}>
-                        <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-                            <Typography variant="h3" component="h1" sx={{
-                                fontWeight: 'bold',
-                                background: 'linear-gradient(45deg, #1976d2, #42a5f5)',
-                                backgroundClip: 'text',
-                                WebkitBackgroundClip: 'text',
-                                WebkitTextFillColor: 'transparent',
-                                textShadow: '0 2px 4px rgba(0,0,0,0.1)'
+        <Box sx={{
+            minHeight: '100vh',
+            width: '100%',
+            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            position: 'relative',
+            '&::before': {
+                content: '""',
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                background: 'url("data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.05"%3E%3Ccircle cx="30" cy="30" r="2"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")',
+                pointerEvents: 'none'
+            }
+        }}>
+            <Container maxWidth="lg" sx={{
+                py: 4,
+                position: 'relative',
+                zIndex: 1
+            }}>
+                <Fade in timeout={800}>
+                    <Box mb={4}>
+                        <Slide direction="down" in timeout={600}>
+                            <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
+                                <Typography variant="h3" component="h1" sx={{
+                                    fontWeight: 'bold',
+                                    background: 'linear-gradient(45deg, #ffffff, #e3f2fd)',
+                                    backgroundClip: 'text',
+                                    WebkitBackgroundClip: 'text',
+                                    WebkitTextFillColor: 'transparent',
+                                    textShadow: '0 4px 8px rgba(0,0,0,0.5)',
+                                    fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem', lg: '3.5rem' }
+                                }}>
+                                    📄 Cover Letter Preview
+                                </Typography>
+                            </Box>
+                        </Slide>
+                        <Slide direction="up" in timeout={800}>
+                            <Typography variant="h6" sx={{
+                                mb: 3,
+                                color: 'rgba(255,255,255,0.95)',
+                                textShadow: '0 2px 4px rgba(0,0,0,0.5)',
+                                fontSize: { xs: '1rem', sm: '1.1rem', md: '1.2rem' },
+                                fontWeight: 300
                             }}>
-                                📄 Cover Letter Preview
+                                Review your generated cover letter and download or print it
+                            </Typography>
+                        </Slide>
+                    </Box>
+                </Fade>
+
+                {/* Action Buttons */}
+                <Fade in timeout={1200}>
+                    <Box sx={{ mb: 4, display: 'flex', justifyContent: 'center', gap: 2, flexWrap: 'wrap' }}>
+                        <Button
+                            variant="contained"
+                            size="large"
+                            onClick={handleDownload}
+                            startIcon={<Download />}
+                            sx={{
+                                px: 4,
+                                py: 1.5,
+                                fontSize: '1.1rem',
+                                fontWeight: 'bold',
+                                borderRadius: 3,
+                                textTransform: 'none',
+                                background: 'linear-gradient(135deg, #ff9800 0%, #ff5722 100%)',
+                                backdropFilter: 'blur(10px)',
+                                border: '2px solid rgba(255,255,255,0.2)',
+                                boxShadow: '0 8px 32px rgba(255, 152, 0, 0.4)',
+                                '&:hover': {
+                                    background: 'linear-gradient(135deg, #f57c00 0%, #e64a19 100%)',
+                                    transform: 'translateY(-3px)',
+                                    boxShadow: '0 12px 40px rgba(255, 152, 0, 0.6)',
+                                    border: '2px solid rgba(255,255,255,0.3)'
+                                },
+                                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                            }}
+                        >
+                            Download Cover Letter
+                        </Button>
+
+                        <Button
+                            variant="contained"
+                            size="large"
+                            onClick={handlePrint}
+                            startIcon={<Print />}
+                            sx={{
+                                px: 4,
+                                py: 1.5,
+                                fontSize: '1.1rem',
+                                fontWeight: 'bold',
+                                borderRadius: 3,
+                                textTransform: 'none',
+                                background: 'linear-gradient(135deg, #4caf50 0%, #8bc34a 100%)',
+                                backdropFilter: 'blur(10px)',
+                                border: '2px solid rgba(255,255,255,0.2)',
+                                boxShadow: '0 8px 32px rgba(76, 175, 80, 0.4)',
+                                '&:hover': {
+                                    background: 'linear-gradient(135deg, #388e3c 0%, #689f38 100%)',
+                                    transform: 'translateY(-3px)',
+                                    boxShadow: '0 12px 40px rgba(76, 175, 80, 0.6)',
+                                    border: '2px solid rgba(255,255,255,0.3)'
+                                },
+                                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                            }}
+                        >
+                            Print Cover Letter
+                        </Button>
+
+                        <Button
+                            variant="outlined"
+                            size="large"
+                            onClick={handleEdit}
+                            startIcon={<Edit />}
+                            sx={{
+                                px: 4,
+                                py: 1.5,
+                                fontSize: '1.1rem',
+                                fontWeight: 'bold',
+                                borderRadius: 3,
+                                textTransform: 'none',
+                                borderColor: 'rgba(255,255,255,0.3)',
+                                color: 'rgba(255,255,255,0.9)',
+                                backdropFilter: 'blur(10px)',
+                                borderWidth: '2px',
+                                '&:hover': {
+                                    borderColor: 'rgba(255,255,255,0.8)',
+                                    background: 'rgba(255,255,255,0.15)',
+                                    transform: 'translateY(-3px)',
+                                    boxShadow: '0 8px 25px rgba(0,0,0,0.3)'
+                                },
+                                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                            }}
+                        >
+                            Edit
+                        </Button>
+
+                        <Button
+                            variant="outlined"
+                            size="large"
+                            onClick={() => navigate('/')}
+                            startIcon={<ArrowBack />}
+                            sx={{
+                                px: 4,
+                                py: 1.5,
+                                fontSize: '1.1rem',
+                                fontWeight: 'bold',
+                                borderRadius: 3,
+                                textTransform: 'none',
+                                borderColor: 'rgba(255,255,255,0.3)',
+                                color: 'rgba(255,255,255,0.9)',
+                                backdropFilter: 'blur(10px)',
+                                borderWidth: '2px',
+                                '&:hover': {
+                                    borderColor: 'rgba(255,255,255,0.8)',
+                                    background: 'rgba(255,255,255,0.15)',
+                                    transform: 'translateY(-3px)',
+                                    boxShadow: '0 8px 25px rgba(0,0,0,0.3)'
+                                },
+                                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                            }}
+                        >
+                            Back to Tools
+                        </Button>
+                    </Box>
+                </Fade>
+
+                {/* Cover Letter Preview */}
+                <Grow in timeout={1000}>
+                    <Paper
+                        elevation={6}
+                        sx={{
+                            overflow: 'hidden',
+                            maxHeight: '800px',
+                            overflowY: 'auto',
+                            borderRadius: 3,
+                            background: 'rgba(255, 255, 255, 0.08)',
+                            backdropFilter: 'blur(20px)',
+                            border: '1px solid rgba(255, 255, 255, 0.15)',
+                            boxShadow: '0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1)'
+                        }}
+                    >
+                        <div
+                            dangerouslySetInnerHTML={{ __html: coverLetterHtml }}
+                            style={{
+                                padding: '0',
+                                backgroundColor: 'white',
+                                minHeight: '100%',
+                                margin: '0'
+                            }}
+                        />
+                    </Paper>
+                </Grow>
+
+                {/* Success Message */}
+                <Fade in timeout={1200}>
+                    <Box mt={4} textAlign="center">
+                        <Box sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            mb: 2
+                        }}>
+                            <CheckCircle sx={{
+                                fontSize: 30,
+                                color: '#4caf50',
+                                mr: 1
+                            }} />
+                            <Typography variant="h6" sx={{
+                                fontWeight: 'bold',
+                                color: 'white',
+                                textShadow: '0 2px 4px rgba(0,0,0,0.5)'
+                            }}>
+                                Cover Letter Generated Successfully!
                             </Typography>
                         </Box>
-                    </Slide>
-                    <Slide direction="up" in timeout={800}>
-                        <Typography variant="h6" color="text.secondary" sx={{ mb: 3 }}>
-                            Review your generated cover letter and download or print it
+                        <Typography variant="body1" sx={{
+                            mb: 2,
+                            color: 'rgba(255,255,255,0.9)',
+                            textShadow: '0 1px 2px rgba(0,0,0,0.3)'
+                        }}>
+                            Your professional cover letter has been created. You can download it as HTML or print it directly.
                         </Typography>
-                    </Slide>
-                </Box>
-            </Fade>
-
-            {/* Action Buttons */}
-            <Fade in timeout={1200}>
-                <Box sx={{ mb: 4, display: 'flex', justifyContent: 'center', gap: 2, flexWrap: 'wrap' }}>
-                    <Button
-                        variant="contained"
-                        size="large"
-                        onClick={handleDownload}
-                        startIcon={<Download />}
-                        sx={{
-                            px: 4,
-                            py: 1.5,
-                            fontSize: '1.1rem',
-                            fontWeight: 'bold',
-                            borderRadius: 2,
-                            textTransform: 'none',
-                            background: 'linear-gradient(45deg, #ff9800, #ff5722)',
-                            boxShadow: '0 4px 12px rgba(255, 152, 0, 0.3)',
-                            '&:hover': {
-                                background: 'linear-gradient(45deg, #f57c00, #e64a19)',
-                                transform: 'translateY(-2px)',
-                                boxShadow: '0 6px 20px rgba(255, 152, 0, 0.4)'
-                            },
-                            transition: 'all 0.3s ease'
-                        }}
-                    >
-                        Download Cover Letter
-                    </Button>
-
-                    <Button
-                        variant="contained"
-                        size="large"
-                        onClick={handlePrint}
-                        startIcon={<Print />}
-                        sx={{
-                            px: 4,
-                            py: 1.5,
-                            fontSize: '1.1rem',
-                            fontWeight: 'bold',
-                            borderRadius: 2,
-                            textTransform: 'none',
-                            background: 'linear-gradient(45deg, #4caf50, #8bc34a)',
-                            boxShadow: '0 4px 12px rgba(76, 175, 80, 0.3)',
-                            '&:hover': {
-                                background: 'linear-gradient(45deg, #388e3c, #689f38)',
-                                transform: 'translateY(-2px)',
-                                boxShadow: '0 6px 20px rgba(76, 175, 80, 0.4)'
-                            },
-                            transition: 'all 0.3s ease'
-                        }}
-                    >
-                        Print Cover Letter
-                    </Button>
-
-                    <Button
-                        variant="outlined"
-                        size="large"
-                        onClick={handleEdit}
-                        startIcon={<Edit />}
-                        sx={{
-                            px: 4,
-                            py: 1.5,
-                            fontSize: '1.1rem',
-                            fontWeight: 'bold',
-                            borderRadius: 2,
-                            textTransform: 'none',
-                            borderColor: '#1976d2',
-                            color: '#1976d2',
-                            '&:hover': {
-                                borderColor: '#1565c0',
-                                background: 'rgba(25, 118, 210, 0.04)',
-                                transform: 'translateY(-2px)'
-                            },
-                            transition: 'all 0.3s ease'
-                        }}
-                    >
-                        Edit
-                    </Button>
-
-                    <Button
-                        variant="outlined"
-                        size="large"
-                        onClick={() => navigate('/')}
-                        startIcon={<ArrowBack />}
-                        sx={{
-                            px: 4,
-                            py: 1.5,
-                            fontSize: '1.1rem',
-                            fontWeight: 'bold',
-                            borderRadius: 2,
-                            textTransform: 'none',
-                            borderColor: '#757575',
-                            color: '#757575',
-                            '&:hover': {
-                                borderColor: '#424242',
-                                background: 'rgba(117, 117, 117, 0.04)',
-                                transform: 'translateY(-2px)'
-                            },
-                            transition: 'all 0.3s ease'
-                        }}
-                    >
-                        Back to Templates
-                    </Button>
-                </Box>
-            </Fade>
-
-            {/* Cover Letter Preview */}
-            <Grow in timeout={1000}>
-                <Paper
-                    elevation={6}
-                    sx={{
-                        overflow: 'hidden',
-                        maxHeight: '800px',
-                        overflowY: 'auto',
-                        borderRadius: 3,
-                        boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
-                        border: '1px solid rgba(0,0,0,0.05)'
-                    }}
-                >
-                    <div
-                        dangerouslySetInnerHTML={{ __html: coverLetterHtml }}
-                        style={{
-                            padding: '30px',
-                            backgroundColor: 'white',
-                            minHeight: '100%'
-                        }}
-                    />
-                </Paper>
-            </Grow>
-
-            {/* Success Message */}
-            <Fade in timeout={1200}>
-                <Box mt={4} textAlign="center">
-                    <Box sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        mb: 2
-                    }}>
-                        <CheckCircle sx={{
-                            fontSize: 30,
-                            color: '#4caf50',
-                            mr: 1
-                        }} />
-                        <Typography variant="h6" color="white" sx={{ fontWeight: 'bold' }}>
-                            Cover Letter Generated Successfully!
-                        </Typography>
+                        <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1 }}>
+                            <Star sx={{ fontSize: 16, color: '#ffc107' }} />
+                            <Star sx={{ fontSize: 16, color: '#ffc107' }} />
+                            <Star sx={{ fontSize: 16, color: '#ffc107' }} />
+                            <Star sx={{ fontSize: 16, color: '#ffc107' }} />
+                            <Star sx={{ fontSize: 16, color: '#ffc107' }} />
+                        </Box>
                     </Box>
-                    <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
-                        Your professional cover letter has been created. You can download it as HTML or print it directly.
-                    </Typography>
-                    <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1 }}>
-                        <Star sx={{ fontSize: 16, color: '#ffc107' }} />
-                        <Star sx={{ fontSize: 16, color: '#ffc107' }} />
-                        <Star sx={{ fontSize: 16, color: '#ffc107' }} />
-                        <Star sx={{ fontSize: 16, color: '#ffc107' }} />
-                        <Star sx={{ fontSize: 16, color: '#ffc107' }} />
-                    </Box>
-                </Box>
-            </Fade>
-        </Container>
+                </Fade>
+            </Container>
+        </Box>
     );
 };
 
